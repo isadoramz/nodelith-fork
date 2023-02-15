@@ -1,0 +1,22 @@
+{
+  "name": "logbook",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
+  "workspaces": [
+    "packages/*"
+  ],
+  "description": "",
+  "scripts": {
+    "build": "npx lerna run build",
+    "test": "npx lerna run test"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "lerna": "^6.5.1"
+  },
+  "dependencies": {
+    "build": "^0.1.4"
+  }
+}
