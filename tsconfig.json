@@ -23,7 +23,7 @@
     "target": "ES6",
     "baseUrl": ".",
     "paths": {
-
+      "@thomazmz/core-domains": ["packages/core-domains"]
     }
   }
 }
