@@ -1,4 +1,4 @@
 import { EntityAttributes } from './entity-attributes'
 import { Entity} from './entity'
 
-export type EntityPropertiesPartial<E extends Entity<any>> = Partial<EntityAttributes<E>>
+export type EntityAttributesPartial<E extends Entity<any>> = Partial<EntityAttributes<E>>
