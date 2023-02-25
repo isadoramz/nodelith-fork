@@ -1,6 +1,5 @@
 export * from './entity'
 export * from './filter'
-export * from './object'
 export * from './query'
 export * from './range'
 export * from './sort'
