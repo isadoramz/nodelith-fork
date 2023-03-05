@@ -93,6 +93,46 @@ export interface Repository<E extends Entity<any>> {
    */
   create(attributes: EntityAttributes<E>[]): Promise<E[]>
 
+  /**
+   * @description Updates a single entity instance that matches a given id and a partial entity representation.
+   * @param {E['id']} id An id that matches the instance to be updated.
+   * @param {EntityAttributesPartial<E>} attributes An object with the attributes and values to be updated.
+   * @returns {Promise<E>} Returns the updated entity.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  updateById(id: E['id'], attributes: EntityAttributesPartial<E>): Promise<E>
 
+  /**
+   * @description Updates multiple entity instances given an array of ids and a partial entity representation.
+   * @param {E['id'][]} ids An array of ids that matches the instances to be updaetd.
+   * @param {EntityAttributesPartial<E>} attributes An object with the attributes and values to be updated.
+   * @returns {Promise<E[]>} Returns the updated entities.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  updateByIds(ids: E['id'][], attributes: EntityAttributesPartial<E>): Promise<E[]>
+
+  /**
+   * @description Updates multiple entity instances that matches an entity filter.
+   * @param {Filter<E>} filter An entity filter that matches the instances to be updaetd.
+   * @param {EntityAttributesPartial<E>} attributes An object with the attributes and values to be updated.
+   * @returns {Promise<E[]>} Returns the updated entities.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  updateByFilter(filter: Filter<E>, attributes: EntityAttributesPartial<E>): Promise<E[]>
+
+  /**
+   * @see updateById
+   */
+  update(id: E['id'], attributes: EntityAttributesPartial<E>): Promise<E>
+
+  /**
+   * @see updateByIds
+   */
+  update(ids: E['id'][], attributes: EntityAttributesPartial<E>): Promise<E[]>
+
+  /**
+   * @see updateByFilter
+   */
+  update(filter: Filter<E>, attributes: EntityAttributesPartial<E>): Promise<E[]>
 }
 
