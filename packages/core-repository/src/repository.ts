@@ -1,4 +1,4 @@
-import { Entity, Filter, Query } from '@thomazmz/core-domains'
+import { Entity, Filter, Query, EntityAttributes, EntityAttributesPartial } from '@thomazmz/core-domains'
 
 export interface Repository<E extends Entity<any>> {
 
@@ -65,5 +65,34 @@ export interface Repository<E extends Entity<any>> {
    * @see getByQuery
    */
   get(query: Query<E>): Promise<E[]>
+
+
+  /**
+   * @description Creates a single entity instance. It will assign the instance a unique id and the createdAt/updatedAt timestamps.
+   * @param {EntityAttributes<E>} attributes The assignable attributes that will be used to create the entity instancy.
+   * @returns {Promise<E>} Returns the created instance.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  createOne(attributes: EntityAttributes<E>): Promise<E>
+
+  /**
+   * @description Creates many entity instancess. It will assign for each of the persisted instances a unique id and the createdAt/updatedAt timestamps.
+   * @param {EntityAttributes<E>[]} attributes The attributes that will be used to create the entity instances.
+   * @returns {Promise<E[]>} Returns an array of created instances.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  createMany(attributes: EntityAttributes<E>[]): Promise<E[]>
+
+  /**
+   * @see createOne
+   */
+  create(attributes: EntityAttributes<E>): Promise<E>
+
+  /**
+   * @see createMany
+   */
+  create(attributes: EntityAttributes<E>[]): Promise<E[]>
+
+
 }
 
