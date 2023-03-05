@@ -170,5 +170,30 @@ export interface Repository<E extends Entity<any>> {
    * @see deleteByFilter
    */
   delete(filter: Filter<E>): Promise<void>
+
+  /**
+   * @description Counts the absolute number of instances on the repository.
+   * @returns {Promise<number>} An integer representing the number of counted entities.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  countAll(): Promise<number>
+
+  /**
+   * @description Counts the number of instances on the repository given an optional filter.
+   * @param {Filter<E>} filter An entity filter that matches the instances to be counted.
+   * @returns {Promise<number>} An integer representing the number of counted entities.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  countByFilter(filter: Filter<E>): Promise<number>
+
+  /**
+   * @see countAll 
+   */
+  count(): Promise<number>
+
+  /**
+   * @see countByFilter 
+   */
+  count(filter: Filter<E>): Promise<number>
 }
 
