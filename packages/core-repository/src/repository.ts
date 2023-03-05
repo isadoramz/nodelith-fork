@@ -134,5 +134,41 @@ export interface Repository<E extends Entity<any>> {
    * @see updateByFilter
    */
   update(filter: Filter<E>, attributes: EntityAttributesPartial<E>): Promise<E[]>
+
+  /**
+   * @description Deletes a single entity instance that matches a given id.
+   * @param {E['id']} id An id that matches the instance to be deleted.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  deleteById(id: E['id']): Promise<void>
+
+  /**
+   * @description Deletes multiple entity instances that matches an array of ids.
+   * @param {E['id']} ids An array of ids that matches the instances to be deleted.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  deleteByIds(ids: E['id'][]): Promise<void>
+
+  /**
+   * @description Deletes multiple entity instances that matches an entity filter.
+   * @param {Filter} filter An entity filter that matches the instances to be deleted.
+   * @throws {RepositoryError} Throws a RepositoryError in case of failure.
+   */
+  deleteByFilter(filter: Filter<E>): Promise<void>
+
+  /**
+   * @see deleteById
+   */
+  delete(id: E['id']): Promise<void>
+
+  /**
+   * @see deleteByIds
+   */
+  delete(ids: E['id'][]): Promise<void>
+
+  /**
+   * @see deleteByFilter
+   */
+  delete(filter: Filter<E>): Promise<void>
 }
 
