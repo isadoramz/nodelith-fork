@@ -24,6 +24,7 @@
     "baseUrl": ".",
     "paths": {
       "@thomazmz/core-domains": ["packages/core-domains/src"],
+      "@thomazmz/core-repository": ["packages/core-repository/src"],
     }
   }
 }
