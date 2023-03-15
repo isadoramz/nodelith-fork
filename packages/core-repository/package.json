@@ -1,9 +1,15 @@
 {
   "name": "@thomazmz/core-repository",
-  "version": "0.0.0",
-  "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
-  "homepage": "https://github.com/thomazmz/@thomazmz.core-repository",
+  "version": "1.0.0",
   "license": "ISC",
+  "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
+  "description": "Core Context",
+  "keywords": [ "TypeScript", "JavaScript" ],
+  "homepage": "https://github.com/thomazmz/core-context/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thomazmz/core-context"
+  },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "directories": {

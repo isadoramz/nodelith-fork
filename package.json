@@ -1,18 +1,23 @@
 {
-  "name": "logbook",
-  "private": true,
-  "version": "1.0.0",
+  "name": "@thomazmz/core-context",
+  "version": "0.0.0",
+  "license": "ISC",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
+  "description": "Core Context",
+  "keywords": [ "TypeScript", "JavaScript" ],
+  "homepage": "https://github.com/thomazmz/core-context/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thomazmz/core-context"
+  },
+  "private": true,
   "workspaces": [
     "packages/*"
   ],
-  "description": "",
   "scripts": {
     "build": "npx lerna run build",
     "test": "npx lerna run test"
   },
-  "keywords": [],
-  "license": "ISC",
   "devDependencies": {
     "lerna": "^6.5.1"
   },
