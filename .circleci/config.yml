@@ -21,6 +21,11 @@ filter-feature-branch: &filter-feature-branch
     ignore: 
       - /main/
 
+executors:
+  node:
+    docker:
+      - image: circleci/node
+
 jobs:
   checkout:
     executor: node
