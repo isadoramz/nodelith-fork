@@ -1,0 +1,60 @@
+
+version: 2.1
+
+restore-cache: &restore_cache
+  restore_cache:
+    keys:
+      - npm-packages-{{ checksum "package-lock.json" }}
+
+save-cache: &save_cache
+  save_cache:
+    key: npm-packages-{{ checksum "package-lock.json" }}
+    paths:
+      - ~/.cache/npm
+
+fast-checkout: &fast-checkout
+  attach_workspace:
+    at: /home/circleci
+
+filter-feature-branch: &filter-feature-branch
+  branches:
+    ignore: 
+      - /main/
+
+jobs:
+  checkout:
+    executor: node
+    steps:
+      - checkout
+      - <<: *restore_cache
+      - run:
+          name: "Install deps"
+          command: npm ci
+      - <<: *save_cache
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - project/node_modules
+  run-tests:
+    executor: node
+    steps:
+      - <<: *fast-checkout
+      - run:
+          name: "run-tests"
+          command: npm run test
+
+workflows:
+  feature-branch-pipeline:
+    jobs:
+      - checkout:
+          requires:
+            - authorize-workflow
+          filters: 
+            <<: *filter-feature-branch
+      - run-tests:
+          name: run-tests
+          requires:
+            - checkout
+          filters: 
+            <<: *filter-feature-branch
