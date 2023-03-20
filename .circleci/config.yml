@@ -53,8 +53,6 @@ workflows:
   feature-branch-pipeline:
     jobs:
       - checkout:
-          requires:
-            - authorize-workflow
           filters: 
             <<: *filter-feature-branch
       - run-tests:
