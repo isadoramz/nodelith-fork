@@ -1,10 +1,13 @@
 {
   "name": "@thomazmz/core-repository",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "license": "ISC",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "description": "Core Context",
-  "keywords": [ "TypeScript", "JavaScript" ],
+  "keywords": [
+    "typescript",
+    "javascript"
+  ],
   "homepage": "https://github.com/thomazmz/core-context/README.md",
   "repository": {
     "type": "git",

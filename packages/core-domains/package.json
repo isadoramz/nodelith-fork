@@ -4,7 +4,10 @@
   "license": "ISC",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "description": "Core Context",
-  "keywords": [ "TypeScript", "JavaScript" ],
+  "keywords": [
+    "typescript",
+    "javascript"
+  ],
   "homepage": "https://github.com/thomazmz/core-context/README.md",
   "repository": {
     "type": "git",

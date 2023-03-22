@@ -1,10 +1,14 @@
 {
   "name": "@thomazmz/core-context",
-  "version": "0.0.0",
   "license": "ISC",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "description": "Core Context",
-  "keywords": [ "TypeScript", "JavaScript" ],
+  "keywords": [
+    "typescript",
+    "javascript",
+    "monorepo",
+    "lerna"
+  ],
   "homepage": "https://github.com/thomazmz/core-context/README.md",
   "repository": {
     "type": "git",
@@ -18,8 +22,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npx lerna run build",
-    "test": "npx lerna run test"
+    "test": "lerna run test",
+    "build": "lerna run build",
+    "publish": "lerna publish"
   },
   "devDependencies": {
     "lerna": "^6.5.1"
