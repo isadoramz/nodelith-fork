@@ -23,8 +23,9 @@ filter-feature-branch: &filter-feature-branch
 
 filter-main-branch: &filter-main-branch
   branches:
-    only:
-      - main
+    only: /main/
+    ignore:
+      - /.*/
 
 executors:
   node:
@@ -38,7 +39,7 @@ jobs:
       - checkout
       - <<: *restore_cache
       - run:
-          name: "Install deps"
+          name: "Install dependencies"
           command: npm ci
       - <<: *save_cache
       - persist_to_workspace:
@@ -51,15 +52,42 @@ jobs:
     steps:
       - <<: *fast-checkout
       - run:
-          name: "run-tests"
+          name: "Run tests"
           command: npm run test
   build:
     executor: node
     steps:
       - <<: *fast-checkout
       - run:
-          name: "build"
+          name: "Build monorepo packages"
           command: npm run build
+      - persist_to_workspace:
+          root: ~/project
+          paths: .
+  publish:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - add_ssh_keys:
+            fingerprints:
+              - "9b:e7:8c:70:8f:e0:ca:b1:c6:89:70:c4:dc:66:05:30"
+      - run:
+          name: "Configure Github"
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+            git config user.email "circleci@core-context.com"
+            git config user.name "circleci"
+      - run:
+          name: "Configure NPM"
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > /home/circleci/.npmrc
+      - run:
+          name: "Version NPM packages"
+          command: "npx lerna version --yes --message 'chore: tag package versions [skip ci]'"
+      - run:
+          name: "Publish NPM packages"
+          command: npx lerna publish from-git --yes
 
 workflows:
   feature-branch-pipeline:
@@ -67,32 +95,28 @@ workflows:
       - checkout:
           filters: 
             <<: *filter-feature-branch
+      - build:
+          name: build
+          requires:
+            - checkout
       - run-tests:
           name: run-tests
           requires:
             - checkout
-          filters: 
-            <<: *filter-feature-branch
-      - build:
-          name: build
-          requires:
-            - run-tests
-          filters: 
-            <<: *filter-feature-branch
   main-branch-pipeline:
     jobs:
       - checkout:
           filters: 
             <<: *filter-main-branch
-      - run-tests:
-          name: run-tests
-          requires:
-            - checkout
-          filters: 
-            <<: *filter-main-branch
       - build:
           name: build
           requires:
+            - checkout
+      - run-tests:
+          name: run-tests
+          requires:
+            - build
+      - publish:
+          name: publish
+          requires:
             - run-tests
-          filters: 
-            <<: *filter-main-branch
