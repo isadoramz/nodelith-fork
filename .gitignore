@@ -4,6 +4,3 @@
 
 ## Darwin OS specific
 **/.DS_Store
-
-## Lerna specific
-**/lerna-debug.log
