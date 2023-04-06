@@ -1,4 +1,4 @@
-import { Entity, Filter, Query, EntityAttributes, EntityAttributesPartial } from '@thomazmz/core-domains'
+import { Entity, Filter, Query, EntityAttributes, EntityAttributesPartial } from '../domains'
 
 export interface Repository<E extends Entity<any>> {
 

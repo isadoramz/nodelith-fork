@@ -102,7 +102,7 @@ workflows:
       - run-tests:
           name: run-tests
           requires:
-            - checkout
+            - build
   main-branch-pipeline:
     jobs:
       - checkout:
