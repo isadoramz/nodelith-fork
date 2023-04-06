@@ -1,7 +1,7 @@
 {
   "name": "@thomazmz/core-context",
   "license": "ISC",
-  "version": "0.0.4",
+  "version": "0.0.0",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "description": "Core Context",
   "main": "lib/index.js",
@@ -18,7 +18,6 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "private": true,
   "workspaces": [
     "packages/*"
   ],
@@ -27,7 +26,10 @@
     "build": "rimraf ./lib/* && tsc"
   },
   "dependencies": {
-    "build": "^0.1.4"
+    "build": "^0.1.4",
+    "conventional-recommended-bump": "^6.1.0",
+    "i": "^0.3.7",
+    "npm": "^9.6.4"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",

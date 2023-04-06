@@ -1,18 +1,23 @@
 
 version: 2.1
 
-restore-cache: &restore_cache
-  restore_cache:
-    keys:
-      - npm-packages-{{ checksum "package-lock.json" }}
-
 save-cache: &save_cache
   save_cache:
     key: npm-packages-{{ checksum "package-lock.json" }}
     paths:
       - ~/.cache/npm
 
-fast-checkout: &fast-checkout
+restore-cache: &restore_cache
+  restore_cache:
+    keys:
+      - npm-packages-{{ checksum "package-lock.json" }}
+
+persist-directory-state: &persist-directory-state 
+  persist_to_workspace: 
+    root: /home/circleci
+    paths: project
+
+restore-directory-state: &restore-directory-state
   attach_workspace:
     at: /home/circleci
 
@@ -27,10 +32,18 @@ filter-main-branch: &filter-main-branch
     ignore:
       - /.*/
 
+filter-semver-tag: &filter-semver-tag
+  tags:
+    only:
+      - /^v\d+\.\d+\.\d+$/
+  branches:
+    ignore: 
+      - /.*/
+
 executors:
   node:
     docker:
-      - image: circleci/node
+      - image: cimg/node:${NODE_VERSION}
 
 jobs:
   checkout:
@@ -42,53 +55,66 @@ jobs:
           name: "Install dependencies"
           command: npm ci
       - <<: *save_cache
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - project
-            - project/node_modules
-  run-tests:
-    executor: node
-    steps:
-      - <<: *fast-checkout
-      - run:
-          name: "Run tests"
-          command: npm run test
+      - <<: *persist-directory-state
   build:
     executor: node
     steps:
-      - <<: *fast-checkout
+      - <<: *restore-directory-state
       - run:
           name: "Build monorepo packages"
           command: npm run build
-      - persist_to_workspace:
-          root: ~/project
-          paths: .
-  publish:
+      - <<: *persist-directory-state
+  test:
     executor: node
     steps:
-      - attach_workspace:
-          at: ~/project
+      - <<: *restore-directory-state
+      - run:
+          name: "Run tests"
+          command: npm run test
+  version:
+    executor: node
+    steps:
+      - <<: *restore-directory-state
       - add_ssh_keys:
             fingerprints:
-              - "9b:e7:8c:70:8f:e0:ca:b1:c6:89:70:c4:dc:66:05:30"
+              - "f7:26:de:da:42:b3:5b:58:33:c4:d5:46:d9:c3:33:90"
+      - run: 
+          name: 'Add GitHub to known hosts'
+          command: ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
-          name: "Configure Github"
+          name: 'Configure GitHub Circle CI user'
           command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
             git config user.email "circleci@core-context.com"
             git config user.name "circleci"
+      - run: 
+          name: 'Instal conventional-recommended-bump globally'
+          command: |
+            sudo npm install -g conventional-recommended-bump
+            sudo npm install -g conventional-changelog-angular
+      - run: 
+          name: 'Generate release version locally'
+          command: |
+            RELEASE_TYPE=$(conventional-recommended-bump -p angular)
+            echo "Next release type: $RELEASE_TYPE"
+            npm version patch -m "chore(release): v%s [skip ci]"
+            VERSION=$(jq -r '.version' package.json)
+            echo "Created version: $VERSION"
+      - run: 
+          name: 'Pushes release version to github'
+          command: |
+            git push origin --follow-tags
+  publish:
+    executor: node
+    steps: 
+      - <<: *restore-directory-state
       - run:
-          name: "Configure NPM"
+          name: "Authenticate to NPM registry"
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > /home/circleci/.npmrc
       - run:
-          name: "Version NPM packages"
-          command: "npx lerna version --yes --message 'chore: tag package versions [skip ci]'"
-      - run:
-          name: "Publish NPM packages"
-          command: npx lerna publish from-git --yes
-
+          name: "Publish Package to NPM registry"
+          command: npm publish --access public
+  
+ 
 workflows:
   feature-branch-pipeline:
     jobs:
@@ -99,8 +125,8 @@ workflows:
           name: build
           requires:
             - checkout
-      - run-tests:
-          name: run-tests
+      - test:
+          name: test
           requires:
             - build
   main-branch-pipeline:
@@ -112,11 +138,28 @@ workflows:
           name: build
           requires:
             - checkout
-      - run-tests:
-          name: run-tests
+      - test:
+          name: test
           requires:
             - build
+      - version:
+          name: version
+          requires:
+            - test
+  semver-tag-pipeline: 
+    jobs:
+      - checkout:
+          filters: 
+            <<: *filter-semver-tag
+      - build:
+          name: build
+          requires:
+            - checkout
+          filters: 
+            <<: *filter-semver-tag
       - publish:
           name: publish
           requires:
-            - run-tests
+            - build
+          filters: 
+            <<: *filter-semver-tag
