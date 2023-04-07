@@ -100,9 +100,8 @@ jobs:
             VERSION=$(jq -r '.version' package.json)
             echo "Created version: $VERSION"
       - run: 
-          name: 'Pushes release version to github'
-          command: |
-            git push origin --follow-tags
+          name: 'Push release version to github'
+          command: git push origin --follow-tags
   publish:
     executor: node
     steps: 
