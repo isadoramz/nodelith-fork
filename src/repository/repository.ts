@@ -1,4 +1,4 @@
-import { Entity, Filter, Query, EntityAttributes, EntityAttributesPartial } from '../domains'
+import { Entity, Filter, Query, EntityProperties, EntityPropertiesPartial } from '../domains'
 
 export interface Repository<E extends Entity<any>> {
 
@@ -69,71 +69,71 @@ export interface Repository<E extends Entity<any>> {
 
   /**
    * @description Creates a single entity instance. It will assign the instance a unique id and the createdAt/updatedAt timestamps.
-   * @param {EntityAttributes<E>} attributes The assignable attributes that will be used to create the entity instancy.
+   * @param {EntityProperties<E>} attributes The assignable attributes that will be used to create the entity instancy.
    * @returns {Promise<E>} Returns the created instance.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
-  createOne(attributes: EntityAttributes<E>): Promise<E>
+  createOne(attributes: EntityProperties<E>): Promise<E>
 
   /**
    * @description Creates many entity instancess. It will assign for each of the persisted instances a unique id and the createdAt/updatedAt timestamps.
-   * @param {EntityAttributes<E>[]} attributes The attributes that will be used to create the entity instances.
+   * @param {EntityProperties<E>[]} attributes The attributes that will be used to create the entity instances.
    * @returns {Promise<E[]>} Returns an array of created instances.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
-  createMany(attributes: EntityAttributes<E>[]): Promise<E[]>
+  createMany(attributes: EntityProperties<E>[]): Promise<E[]>
 
   /**
    * @see createOne
    */
-  create(attributes: EntityAttributes<E>): Promise<E>
+  create(attributes: EntityProperties<E>): Promise<E>
 
   /**
    * @see createMany
    */
-  create(attributes: EntityAttributes<E>[]): Promise<E[]>
+  create(attributes: EntityProperties<E>[]): Promise<E[]>
 
   /**
    * @description Updates a single entity instance that matches a given id and a partial entity representation.
    * @param {E['id']} id An id that matches the instance to be updated.
-   * @param {EntityAttributesPartial<E>} attributes An object with the attributes and values to be updated.
+   * @param {EntityPropertiesPartial<E>} attributes An object with the attributes and values to be updated.
    * @returns {Promise<E>} Returns the updated entity.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
-  updateById(id: E['id'], attributes: EntityAttributesPartial<E>): Promise<E>
+  updateById(id: E['id'], attributes: EntityPropertiesPartial<E>): Promise<E>
 
   /**
    * @description Updates multiple entity instances given an array of ids and a partial entity representation.
    * @param {E['id'][]} ids An array of ids that matches the instances to be updaetd.
-   * @param {EntityAttributesPartial<E>} attributes An object with the attributes and values to be updated.
+   * @param {EntityPropertiesPartial<E>} attributes An object with the attributes and values to be updated.
    * @returns {Promise<E[]>} Returns the updated entities.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
-  updateByIds(ids: E['id'][], attributes: EntityAttributesPartial<E>): Promise<E[]>
+  updateByIds(ids: E['id'][], attributes: EntityPropertiesPartial<E>): Promise<E[]>
 
   /**
    * @description Updates multiple entity instances that matches an entity filter.
    * @param {Filter<E>} filter An entity filter that matches the instances to be updaetd.
-   * @param {EntityAttributesPartial<E>} attributes An object with the attributes and values to be updated.
+   * @param {EntityPropertiesPartial<E>} attributes An object with the attributes and values to be updated.
    * @returns {Promise<E[]>} Returns the updated entities.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
-  updateByFilter(filter: Filter<E>, attributes: EntityAttributesPartial<E>): Promise<E[]>
+  updateByFilter(filter: Filter<E>, attributes: EntityPropertiesPartial<E>): Promise<E[]>
 
   /**
    * @see updateById
    */
-  update(id: E['id'], attributes: EntityAttributesPartial<E>): Promise<E>
+  update(id: E['id'], attributes: EntityPropertiesPartial<E>): Promise<E>
 
   /**
    * @see updateByIds
    */
-  update(ids: E['id'][], attributes: EntityAttributesPartial<E>): Promise<E[]>
+  update(ids: E['id'][], attributes: EntityPropertiesPartial<E>): Promise<E[]>
 
   /**
    * @see updateByFilter
    */
-  update(filter: Filter<E>, attributes: EntityAttributesPartial<E>): Promise<E[]>
+  update(filter: Filter<E>, attributes: EntityPropertiesPartial<E>): Promise<E[]>
 
   /**
    * @description Deletes a single entity instance that matches a given id.
