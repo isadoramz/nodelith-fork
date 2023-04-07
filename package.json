@@ -6,6 +6,9 @@
   "description": "Core Context",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "files": [
+    "./lib"
+  ],
   "keywords": [
     "typescript",
     "javascript"
