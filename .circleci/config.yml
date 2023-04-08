@@ -96,7 +96,7 @@ jobs:
           command: |
             RELEASE_TYPE=$(conventional-recommended-bump -p angular)
             echo "Next release type: $RELEASE_TYPE"
-            npm version patch -m "chore(release): v%s [skip ci]"
+            npm version $RELEASE_TYPE -m "chore(release): v%s [skip ci]"
             VERSION=$(jq -r '.version' package.json)
             echo "Created version: $VERSION"
       - run: 
