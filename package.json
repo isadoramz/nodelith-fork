@@ -1,7 +1,7 @@
 {
   "name": "@thomazmz/core-context",
   "license": "ISC",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "description": "Core Context",
   "main": "lib/index.js",
