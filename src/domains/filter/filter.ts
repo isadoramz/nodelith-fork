@@ -1,5 +1,5 @@
-import { Range }  from '../../range'
-import { Value } from '../../value'
+import { Range }  from '../range'
+import { Value } from '../value'
 
 export type Filter<F extends Value> =
   F extends Date ? Date | Date[] | Range<Date> | Range<Date>[] :
