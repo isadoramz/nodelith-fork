@@ -8,7 +8,7 @@ export interface Repository<E extends Entity<any>> {
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
   getAll(): Promise<E[]>
-  
+
   /**
    * @description Gets a single entity instance that matches a given id.
    * @param {E['id']} id An id that matches the single instance to get.
@@ -66,7 +66,6 @@ export interface Repository<E extends Entity<any>> {
    */
   get(query: Query<E>): Promise<E[]>
 
-
   /**
    * @description Creates a single entity instance. It will assign the instance a unique id and the createdAt/updatedAt timestamps.
    * @param {EntityProperties<E>} attributes The assignable attributes that will be used to create the entity instancy.
@@ -76,7 +75,7 @@ export interface Repository<E extends Entity<any>> {
   createOne(attributes: EntityProperties<E>): Promise<E>
 
   /**
-   * @description Creates many entity instancess. It will assign for each of the persisted instances a unique id and the createdAt/updatedAt timestamps.
+   * @description Creates multiple entity instancess assigning them an unique id and the createdAt/updatedAt timestamps.
    * @param {EntityProperties<E>[]} attributes The attributes that will be used to create the entity instances.
    * @returns {Promise<E[]>} Returns an array of created instances.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
@@ -196,4 +195,3 @@ export interface Repository<E extends Entity<any>> {
    */
   count(filter: Filter<E>): Promise<number>
 }
-

@@ -1,8 +1,8 @@
 
+import { ValueObject } from 'domains/value'
 import { Identifiable, Identifier } from '../identifiable'
-import { ValueObject } from '../value'
 
-export type Entity<I extends Identifier = string> =  Identifiable<I> & ValueObject & {
-  createdAt: Date,
-  updatedAt: Date,
+export type Entity<I extends Identifier = string> = ValueObject & Identifiable<I> & {
+  readonly createdAt: Date,
+  readonly updatedAt: Date,
 }
