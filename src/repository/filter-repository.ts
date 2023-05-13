@@ -1,7 +1,6 @@
 import { Entity, Filter, EntityPropertiesPartial } from '../domains'
 
 export interface FilterRepository<E extends Entity<any>> {
-
   /**
    * @description Gets multiple entity instances that matches an entity filter.
    * @param {Filter<E>} filter An entity filter that matches the instances to get.

@@ -1,7 +1,6 @@
 import { Entity, EntityProperties, EntityPropertiesPartial } from '../domains'
 
 export interface CrudRepository<E extends Entity<any>> {
-
   /**
    * @description Gets all entity instance in a repository.
    * @returns {Promise<E>} Returns all the instances in the repository  as an array.
