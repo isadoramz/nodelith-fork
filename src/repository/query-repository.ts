@@ -1,4 +1,4 @@
-import { Entity, Query } from '../domains'
+import { Entity, Query } from '../domain'
 
 export interface QueryRepository<E extends Entity<any>> {
   /**
