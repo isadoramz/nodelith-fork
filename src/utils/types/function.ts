@@ -1,0 +1,1 @@
+export type Function<Return = any, Arguments extends Array<any> = Array<any>> = (...args: Arguments) => Return
