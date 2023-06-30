@@ -1,4 +1,5 @@
 export * from './domain'
+export * from './http'
 export * from './logger'
 export * from './parser'
 export * from './repository'
