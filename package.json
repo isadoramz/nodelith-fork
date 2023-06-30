@@ -3,7 +3,7 @@
   "license": "ISC",
   "version": "0.0.1",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
-  "description": "Really just some utility functions to be used with joi library",
+  "description": "Utility functions for the Joi library",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
