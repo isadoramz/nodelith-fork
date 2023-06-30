@@ -1,3 +1,3 @@
-export type Constructor<ClassType = any, Arguments extends Array<any> = Array<any>> = {
-  new (...args: Arguments): ClassType
+export type Constructor<Class = any, Arguments extends Array<any> = Array<any>> = {
+  new (...args: Arguments): Class
 }
