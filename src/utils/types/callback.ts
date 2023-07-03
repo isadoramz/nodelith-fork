@@ -1,3 +1,3 @@
 import { Function } from './function'
 
-export type CallbackFunction = Function<void>
+export type Callback<Args extends any[] = any[]> = Function<void, Args>
