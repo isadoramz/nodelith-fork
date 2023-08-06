@@ -1,8 +1,7 @@
 export interface Logger {
-  trace(message: string): void
-  debug(message: string): void
-  info(message: string): void
-  warn(message: string): void
-  error(message: string): void
-  fatal(message: string): void
+  trace(message?: any, ...optionalParams: any[]): void
+  debug(message?: any, ...optionalParams: any[]): void
+  info(message?: any, ...optionalParams: any[]): void
+  warn(message?: any, ...optionalParams: any[]): void
+  error(message?: any, ...optionalParams: any[]): void
 }
