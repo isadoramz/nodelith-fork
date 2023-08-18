@@ -1,4 +1,4 @@
-import { Entity } from '../domain'
+import { Entity } from '../entity'
 import { CrudRepository } from './crud-repository';
 // import { FilterRepository } from './filter-repository';
 // import { QueryRepository } from './query-repository'

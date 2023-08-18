@@ -1,4 +1,4 @@
-import { Value } from '../domain'
+import { Value } from '../value'
 
 /*
  * Attempts to parse strings so that a given unkown value fits a schema.

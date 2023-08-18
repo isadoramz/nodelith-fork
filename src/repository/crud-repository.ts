@@ -1,4 +1,4 @@
-import { Entity, EntityProperties, EntityPropertiesPartial } from '../domain'
+import { Entity, EntityProperties, EntityPropertiesPartial } from '../entity'
 
 export interface CrudRepository<E extends Entity<any>> {
   /**

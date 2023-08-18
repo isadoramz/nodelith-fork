@@ -1,4 +1,4 @@
-import { Value } from '../domain'
+import { Value } from '../value'
 
 /*
  * Validates an unknown value in accordance to a schema

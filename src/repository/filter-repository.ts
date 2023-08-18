@@ -1,4 +1,5 @@
-import { Entity, Filter, EntityPropertiesPartial } from '../domain'
+import { Entity, EntityPropertiesPartial } from '../entity'
+import { Filter } from '../filter'
 
 export interface FilterRepository<E extends Entity<any>> {
   /**
