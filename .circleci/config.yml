@@ -77,7 +77,7 @@ jobs:
       - <<: *restore-directory-state
       - add_ssh_keys:
             fingerprints:
-              - "f7:26:de:da:42:b3:5b:58:33:c4:d5:46:d9:c3:33:90"
+              - "a0:2d:cb:a0:26:a8:b0:b6:6b:65:db:71:6a:28:ab:12"
       - run: 
           name: 'Add GitHub to known hosts'
           command: ssh-keyscan github.com >> ~/.ssh/known_hosts
