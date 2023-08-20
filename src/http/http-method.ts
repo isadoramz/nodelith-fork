@@ -1,19 +1,19 @@
-export const Get = 'get'
+export const HttpGet = 'get'
 
-export const Put = 'put'
+export const HttpPut = 'put'
 
-export const Delete = 'delete'
+export const HttpDelete = 'delete'
 
-export const Post = 'post'
+export const HttpPost = 'post'
 
-export const Patch = 'patch'
+export const HttpPatch = 'patch'
 
 export const HttpMethods = [
-  Get,
-  Put,
-  Delete,
-  Post,  
-  Patch
+  HttpGet,
+  HttpPut,
+  HttpDelete,
+  HttpPost,  
+  HttpPatch
 ] as const
 
 export type HttpMethod = (typeof HttpMethods)[number]
