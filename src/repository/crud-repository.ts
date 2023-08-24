@@ -1,4 +1,4 @@
-import { Entity, EntityProperties, EntityPropertiesPartial } from '../entity'
+import { Entity, EntityProperties, EntityPropertiesPartial, EntityPropertiesToUpdate } from '../entity'
 
 export interface CrudRepository<E extends Entity<any>> {
   /**
@@ -47,7 +47,7 @@ export interface CrudRepository<E extends Entity<any>> {
    * @returns {Promise<E>} Returns the updated entity.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
-  updateById(id: E['id'], attributes: EntityPropertiesPartial<E>): Promise<E>
+  updateById(id: E['id'], attributes: EntityPropertiesToUpdate<E>): Promise<E>
 
   /**
    * @description Updates multiple entity instances given an array of ids and a partial entity representation.
@@ -56,7 +56,7 @@ export interface CrudRepository<E extends Entity<any>> {
    * @returns {Promise<E[]>} Returns the updated entities.
    * @throws {RepositoryError} Throws a RepositoryError in case of failure.
    */
-  updateByIds(ids: E['id'][], attributes: EntityPropertiesPartial<E>): Promise<E[]>
+  updateByIds(ids: E['id'][], attributes: EntityPropertiesToUpdate<E>): Promise<E[]>
 
   /**
    * @description Deletes a single entity instance that matches a given id.
