@@ -36,6 +36,7 @@
       "@core-fusion/tooling": ["packages/tooling/src"],
       "@core-fusion/utils": ["packages/utils/src"],
       "@core-fusion/container": ["packages/container/src"],
+      "@core-fusion/controller": ["packages/controller/src"],
     }
   },
   "ts-node": { "require": ["tsconfig-paths/register"] }
