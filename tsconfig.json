@@ -35,6 +35,7 @@
       "@core-fusion/mongodb": ["packages/mongodb/src"],
       "@core-fusion/tooling": ["packages/tooling/src"],
       "@core-fusion/utils": ["packages/utils/src"],
+      "@core-fusion/container": ["packages/container/src"],
     }
   },
   "ts-node": { "require": ["tsconfig-paths/register"] }
