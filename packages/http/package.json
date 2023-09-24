@@ -1,0 +1,25 @@
+{
+  "name": "@core-fusion/http",
+  "license": "MIT",
+  "version": "0.0.1",
+  "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "./lib"
+  ],
+  "keywords": [
+    "typescript",
+    "javascript",
+    "http",
+    "node"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node lib/index.js",
+    "test": "jest --passWithNoTests --config ./jest.json",
+    "build": "rimraf ./lib/* && tsc --baseUrl ./src"
+  }
+}
