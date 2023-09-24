@@ -1,12 +1,12 @@
-import { Range }  from '../range'
-import { Value } from '../value'
+import { Value, ValueObject } from '@core-fusion/context';
 
-export type Filter<F extends Value> =
-  F extends Date ? Date | Date[] | Range<Date> | Range<Date>[] :
-  F extends number ? number | number[] | Range<number> | Range<number>[] :
-  F extends bigint ? bigint | bigint[] | Range<bigint> | Range<bigint>[] :
-  F extends string ? string | string[] :
-  F extends boolean ? true | false :
-  F extends Array<infer U> ? U | U[] : {
-    [K in keyof F]?: Filter<F[K] & Value>
-  }
+export type Filter<Filterable extends Value> = 
+  Filterable extends number ? number | number[] :
+  Filterable extends bigint ? bigint | bigint[] :
+  Filterable extends string ? string | string[] :
+  Filterable extends boolean ? boolean | boolean[] :
+  Filterable extends Date ? Date | Date[] :
+  Filterable extends Array<infer U> ? U | U[] :
+  Filterable extends ValueObject ? { 
+    [K in keyof Filterable]?: Filter<Filterable[K]> 
+  } : never
