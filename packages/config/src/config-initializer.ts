@@ -39,8 +39,12 @@ export class ConfigInitializer<Config extends ConfigObject> implements Initializ
         const [key, schema] = nestedProfile;
 
         const unparsedValue = await configLoader?.load(key);
+
+        const nestedDefaultsAreUndefined = nestedDefaults !== undefined && nestedDefaults !== null
+
+        const unparsedValueIsUndefined = nestedDefaults !== undefined && nestedDefaults !== null
   
-        if (!nestedDefaults && !unparsedValue) {
+        if (!nestedDefaultsAreUndefined && unparsedValueIsUndefined) {
           throw new Error(`Could not load the environment variable ${key}.`);
         }
   
