@@ -33,7 +33,6 @@
       "@core-fusion/joi": ["packages/joi/src"],
       "@core-fusion/http": ["packages/http/src"],
       "@core-fusion/mongodb": ["packages/mongodb/src"],
-      "@core-fusion/tooling": ["packages/tooling/src"],
       "@core-fusion/utils": ["packages/utils/src"],
       "@core-fusion/container": ["packages/container/src"],
       "@core-fusion/controller": ["packages/controller/src"],
