@@ -1,0 +1,36 @@
+{
+  "name": "@core-fusion/config",
+  "license": "MIT",
+  "version": "0.0.1",
+  "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "./lib"
+  ],
+  "keywords": [
+    "typescript",
+    "javascript",
+    "controller",
+    "config",
+    "node"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node lib/index.js",
+    "test": "jest --passWithNoTests --config ./jest.json",
+    "build": "rimraf ./lib/* && tsc --baseUrl ./src"
+  },
+  "devDependencies": {
+    "@core-fusion/context": "^0.2.27",
+    "@types/express": "^4.17.17",
+    "joi": "^17.9.2"
+  },
+  "peerDependencies": {
+    "@core-fusion/context": "^0.2.27",
+    "@types/express": "^4.17.17",
+    "joi": "^17.9.2"
+  }
+}
