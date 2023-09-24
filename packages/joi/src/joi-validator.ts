@@ -1,5 +1,5 @@
+import { Validator, Value } from "@core-fusion/context";
 import joi, { Schema, ValidationResult } from "joi";
-import { Validator, Value } from "@thomazmz/core-context";
 
 export class JoiValidator<V extends Value> implements Validator<V> {
   constructor(private readonly schema: Schema<V>) {}

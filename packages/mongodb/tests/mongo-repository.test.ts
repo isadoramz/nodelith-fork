@@ -2,7 +2,7 @@ import {
   ObjectId as MongodbObjectId
 } from 'mongodb'
 
-import { EntityProperties } from '@thomazmz/core-context'
+import { EntityProperties } from '@core-fusion/context'
 import { MongoTestContext } from './mongo-repository-test-context'
 import { MongoTestEntity } from './mongo-repository-test-entity'
 import { MongoRepository } from '../src/mongo-repository'

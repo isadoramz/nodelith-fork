@@ -1,3 +1,3 @@
-import { DeepPartial, ValueObject } from "@thomazmz/core-context";
+import { DeepPartial, ValueObject } from "@core-fusion/context";
 
 export type ConfigInitializerDefaults<Config extends ValueObject = any> = DeepPartial<Config>;

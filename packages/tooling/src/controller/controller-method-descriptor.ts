@@ -1,4 +1,4 @@
-import { Function } from '@thomazmz/core-context'
+import { Function } from '@core-fusion/context'
 import { ControllerMethodMetadata } from "./controller-method-metadata";
 
 export type ControllerMethodDescriptor = TypedPropertyDescriptor<

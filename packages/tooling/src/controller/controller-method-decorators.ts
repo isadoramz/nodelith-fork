@@ -1,6 +1,6 @@
 
 import { Schema } from 'joi';
-import { HttpMethod } from '@thomazmz/core-context';
+import { HttpMethod } from '@core-fusion/context';
 import { createBodySchemaRequestHandler } from './controller-request-handlers';
 import { ControllerMethodDescriptor } from './controller-method-descriptor';
 import { ControllerMethodMetadata } from './controller-method-metadata'

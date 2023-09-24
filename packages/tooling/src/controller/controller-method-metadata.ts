@@ -1,4 +1,4 @@
-import { HttpMethod } from '@thomazmz/core-context';
+import { HttpMethod } from '@core-fusion/context';
 import { RequestHandler } from 'express';
 import { ControllerMethodDescriptor } from './controller-method-descriptor';
 

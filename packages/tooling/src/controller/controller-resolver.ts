@@ -1,8 +1,8 @@
 import * as Express from 'express';
 import { Container } from '../container'
 import { ControllerMethodMetadata } from './controller-method-metadata'
-import { Constructor, HttpOk } from '@thomazmz/core-context';
-import { FunctionUtils } from '@thomazmz/core-utils';
+import { FunctionUtils } from '@core-fusion/utils';
+import { Constructor, HttpOk } from '@core-fusion/context';
 
 export class ControllerResolver {
 

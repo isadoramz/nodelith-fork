@@ -1,4 +1,4 @@
-import { JoiValidator } from '@thomazmz/joi-validator'
+import { JoiValidator } from '@core-fusion/joi'
 import { NextFunction, Request, Response } from 'express'
 import { Schema } from 'joi'
 

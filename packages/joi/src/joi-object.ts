@@ -1,4 +1,4 @@
-import { ValueObject } from "@thomazmz/core-context";
+import { ValueObject } from "@core-fusion/context";
 import joi from "joi";
 
 function baseObject<T extends ValueObject>(schemaMap?: joi.SchemaMap<T>) {

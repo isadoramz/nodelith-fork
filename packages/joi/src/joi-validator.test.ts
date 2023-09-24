@@ -1,4 +1,4 @@
-import { boolean, string, number, date, object } from "@thomazmz/joi-utils";
+import { boolean, string, number, date, object } from "@core-fusion/joi";
 import { JoiValidator } from "./joi-validator";
 
 describe("joi-validator", () => {

@@ -1,5 +1,5 @@
 import { AwilixContainer, InjectionModeType, asClass, asFunction, asValue, createContainer } from 'awilix';
-import { Constructor, Function } from '@thomazmz/core-context';
+import { Constructor, Function } from '@core-fusion/context';
 
 export class Container {
 

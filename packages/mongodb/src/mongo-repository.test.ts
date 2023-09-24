@@ -5,7 +5,7 @@ import {
 } from 'mongodb'
 
 import { MongoRepository } from './mongo-repository'
-import { RepositoryError } from '@thomazmz/core-context'
+import { RepositoryError } from '@core-fusion/context'
 
 
 describe('MongoRepository unit tests', () => {

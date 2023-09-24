@@ -11,15 +11,14 @@ import {
   Entity,
   Identifier,
   EntityProperties,
-  EntityPropertiesPartial,
   EntityPropertiesToUpdate,
   RepositoryError,
   Repository,
-} from '@thomazmz/core-context'
+} from '@core-fusion/context'
 
 import { 
   ArrayUtils
-} from '@thomazmz/core-utils'
+} from '@core-fusion/utils'
 
 export class MongoRepository<E extends Entity<any>> implements Repository<E> {
   protected readonly collection: Collection

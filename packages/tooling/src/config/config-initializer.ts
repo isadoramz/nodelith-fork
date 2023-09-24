@@ -1,4 +1,4 @@
-import { ConfigLoader, ValueObject } from "@thomazmz/core-context";
+import { ConfigLoader, ValueObject } from "@core-fusion/context";
 import { ConfigInitializerProfile } from "./config-initializer-profile";
 import { ConfigInitializerDefaults } from "./config-initializer-defaults";
 

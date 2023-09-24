@@ -1,0 +1,33 @@
+{
+  "exclude": [ "**/node_modules" ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "target": "ES6",
+    "baseUrl": ".",
+    "paths": {
+      "@core-fusion/context": ["packages/context/src"],
+      "@core-fusion/joi": ["packages/joi/src"],
+      "@core-fusion/mongodb": ["packages/mongodb/src"],
+      "@core-fusion/tooling": ["packages/tooling/src"],
+      "@core-fusion/utils": ["packages/utils/src"],
+    }
+  }
+}
