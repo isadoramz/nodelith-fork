@@ -1,8 +1,11 @@
-import { Validator, Value } from "@core-fusion/context";
-import joi, { Schema, ValidationResult } from "joi";
+import { Value, Validator, Constructor } from '@core-fusion/context';
+import joi, { Schema, ValidationResult } from 'joi';
 
 export class JoiValidator<V extends Value> implements Validator<V> {
-  constructor(private readonly schema: Schema<V>) {}
+  constructor(
+    private readonly schema: Schema<V>, 
+    private readonly errorClass: Constructor<Error> = Error
+  ) {}
 
   cast(value: unknown): value is V {
     return this.validate(value);
@@ -38,7 +41,7 @@ export class JoiValidator<V extends Value> implements Validator<V> {
     });
   }
 
-  protected throwError(reason: string): void {
-    throw new Error(reason);
+  protected throwError(message: string): void {
+    throw new this.errorClass(message);
   }
 }
