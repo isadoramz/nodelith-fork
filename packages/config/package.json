@@ -1,7 +1,7 @@
 {
   "name": "@core-fusion/config",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.7.0",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -24,7 +24,7 @@
     "build": "rimraf ./lib/* && tsc --baseUrl ./src"
   },
   "devDependencies": {
-    "@core-fusion/context": "^0.2.27",
+    "@core-fusion/context": "^0.7.0",
     "@types/express": "^4.17.17",
     "joi": "^17.9.2"
   },

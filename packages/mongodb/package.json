@@ -1,7 +1,7 @@
 {
   "name": "@core-fusion/mongodb",
   "license": "MIT",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -23,13 +23,13 @@
     "build": "rimraf ./lib/* && tsc --baseUrl ./src"
   },
   "peerDependencies": {
-    "mongodb": "^5.2.0",
     "@core-fusion/context": "^0.2.27",
-    "@core-fusion/utils": "^0.2.24"
+    "@core-fusion/utils": "^0.2.24",
+    "mongodb": "^5.2.0"
   },
   "devDependencies": {
-    "mongodb": "^5.2.0",
-    "@core-fusion/context": "^0.2.27",
-    "@core-fusion/utils": "^0.2.24"
+    "@core-fusion/context": "^0.7.0",
+    "@core-fusion/utils": "^0.7.0",
+    "mongodb": "^5.2.0"
   }
 }
