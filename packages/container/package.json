@@ -23,9 +23,11 @@
     "build": "rimraf ./lib/* && tsc --project build.json"
   },
   "devDependencies": {
-    "@nodelith/context": "^0.7.0"
+    "@nodelith/context": "^0.7.0",
+    "awilix": "^9.0.0"
   },
   "peerDependencies": {
-    "@nodelith/context": "^0.7.0"
+    "@nodelith/context": "^0.7.0",
+    "awilix": "^9.0.0"
   }
 }
