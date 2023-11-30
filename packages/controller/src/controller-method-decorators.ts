@@ -1,6 +1,6 @@
 
 import { Schema } from 'joi';
-import { HttpMethod, HttpStatus } from '@core-fusion/http';
+import { HttpMethod, HttpStatus } from '@nodelith/http';
 import { createBodySchemaRequestHandler, createPrincipalAuthorizationRequestHandler } from './controller-request-handlers';
 import { ControllerMethodDescriptor } from './controller-method-descriptor';
 import { ControllerMethodMetadata } from './controller-method-metadata'

@@ -1,4 +1,4 @@
-import { DeepReplace } from '@core-fusion/context'
+import { DeepReplace } from '@nodelith/context'
 import { ConfigObject } from './config-object'
 import { Schema } from 'joi'
 

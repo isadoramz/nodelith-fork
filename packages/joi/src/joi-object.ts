@@ -1,4 +1,4 @@
-import { ValueObject } from "@core-fusion/context";
+import { ValueObject } from "@nodelith/context";
 import joi from "joi";
 
 function baseObject<T extends ValueObject>(schemaMap?: joi.SchemaMap<T>) {

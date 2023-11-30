@@ -1,4 +1,4 @@
-import { Value, Validator, Constructor } from '@core-fusion/context';
+import { Value, Validator, Constructor } from '@nodelith/context';
 import joi, { Schema, ValidationResult } from 'joi';
 
 export class JoiValidator<V extends Value> implements Validator<V> {

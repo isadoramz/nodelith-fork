@@ -1,5 +1,5 @@
 import * as Express from 'express';
-import { HttpCode, HttpMethod } from '@core-fusion/http';
+import { HttpCode, HttpMethod } from '@nodelith/http';
 import { ControllerMethodDescriptor } from './controller-method-descriptor';
 
 export class ControllerMethodMetadata {

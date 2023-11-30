@@ -1,4 +1,5 @@
 {
+  "include": ["./packages/*/src/**/*.ts", "./packages/*/tests/**/*.ts"],
   "exclude": ["**/node_modules"],
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
@@ -29,13 +30,13 @@
     "target": "ES6",
     "types": ["jest", "node"],
     "paths": {
-      "@core-fusion/context": ["packages/context/src"],
-      "@core-fusion/joi": ["packages/joi/src"],
-      "@core-fusion/http": ["packages/http/src"],
-      "@core-fusion/mongodb": ["packages/mongodb/src"],
-      "@core-fusion/utils": ["packages/utils/src"],
-      "@core-fusion/container": ["packages/container/src"],
-      "@core-fusion/controller": ["packages/controller/src"],
+      "@nodelith/joi": ["packages/joi/src"],
+      "@nodelith/http": ["packages/http/src"],
+      "@nodelith/utils": ["packages/utils/src"],
+      "@nodelith/mongodb": ["packages/mongo/src"],
+      "@nodelith/context": ["packages/context/src"],
+      "@nodelith/container": ["packages/container/src"],
+      "@nodelith/controller": ["packages/controller/src"],
     }
   },
   "ts-node": { "require": ["tsconfig-paths/register"] }

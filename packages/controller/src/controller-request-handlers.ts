@@ -1,9 +1,9 @@
 import * as Joi from 'joi'
 import * as Express from 'express';
-import { Function } from '@core-fusion/context'
-import { JoiValidator } from '@core-fusion/joi'
-import { FunctionUtils } from '@core-fusion/utils';
-import { HttpCode, HttpOk, InvalidRequestBodyError, UnauthorizedError } from '@core-fusion/http'
+import { Function } from '@nodelith/context'
+import { JoiValidator } from '@nodelith/joi'
+import { FunctionUtils } from '@nodelith/utils';
+import { HttpCode, HttpOk, InvalidRequestBodyError, UnauthorizedError } from '@nodelith/http'
 import { ControllerRequest } from './controller-request';
 
 export function createControllerRequestHandler<C>(instance: C, key: keyof C, httpCode?: HttpCode): Express.RequestHandler | undefined {

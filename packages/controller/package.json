@@ -1,5 +1,5 @@
 {
-  "name": "@core-fusion/controller",
+  "name": "@nodelith/controller",
   "license": "MIT",
   "version": "0.7.0",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
@@ -20,12 +20,14 @@
   "scripts": {
     "start": "node lib/index.js",
     "test": "jest --passWithNoTests --config ./jest.json",
-    "build": "rimraf ./lib/* && tsc --baseUrl ./src"
+    "build": "rimraf ./lib/* && tsc --project build.json"
   },
   "devDependencies": {
-    "@core-fusion/context": "^0.7.0"
+    "@nodelith/context": "^0.7.0",
+    "@nodelith/joi": "^0.0.7"
   },
   "peerDependencies": {
-    "@core-fusion/context": "^0.2.27"
+    "@nodelith/context": "^0.2.27",
+    "@nodelith/joi": "^0.0.7"
   }
 }

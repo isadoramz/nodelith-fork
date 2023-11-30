@@ -1,5 +1,5 @@
 import { AwilixContainer, InjectionModeType, LifetimeType, asClass, asFunction, asValue, createContainer } from 'awilix';
-import { Constructor, Logger, Function, Initializer } from '@core-fusion/context';
+import { Constructor, Logger, Function, Initializer } from '@nodelith/context';
 
 export class Container {
 

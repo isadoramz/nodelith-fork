@@ -6,7 +6,7 @@
       "allowBranch": "main",
       "noChangelog": true,
       "conventionalCommits": true,
-      "message": "chore(release): publish version v%v"
+      "message": "chore(release): publish version v%v [skip ci]"
     }
   }
 }

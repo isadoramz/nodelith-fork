@@ -14,11 +14,11 @@ import {
   EntityPropertiesToUpdate,
   RepositoryError,
   Repository,
-} from '@core-fusion/context'
+} from '@nodelith/context'
 
 import { 
   ArrayUtils
-} from '@core-fusion/utils'
+} from '@nodelith/utils'
 
 export class MongoRepository<E extends Entity<any>> implements Repository<E> {
   protected readonly collection: Collection

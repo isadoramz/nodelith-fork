@@ -1,5 +1,5 @@
 
-import { Initializer } from '@core-fusion/context';
+import { Initializer } from '@nodelith/context';
 import { ConfigLoader } from './config-loader';
 import { ConfigObject } from './config-object';
 import { ConfigInitializerProfile } from './config-initializer-profile';

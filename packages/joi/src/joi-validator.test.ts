@@ -1,5 +1,9 @@
-import { boolean, string, number, date, object } from "@core-fusion/joi";
-import { JoiValidator } from "./joi-validator";
+import { JoiValidator } from './joi-validator';
+import { boolean } from './joi-boolean';
+import { object } from './joi-object';
+import { string } from './joi-string';
+import { number } from './joi-number';
+import { date } from './joi-date';
 
 describe("joi-validator", () => {
   const validator = new JoiValidator(

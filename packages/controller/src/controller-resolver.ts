@@ -1,7 +1,7 @@
 import { join } from 'path';
 import * as Express from 'express';
-import { Container } from '@core-fusion/container'
-import { Constructor, Function } from '@core-fusion/context';
+import { Container } from '@nodelith/container'
+import { Constructor, Function } from '@nodelith/context';
 import { ControllerClassMetadata } from './controller-class-metadata'
 import { ControllerMethodMetadata } from './controller-method-metadata'
 import { createControllerRequestHandler } from './controller-request-handlers';

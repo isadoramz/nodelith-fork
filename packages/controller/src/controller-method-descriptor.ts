@@ -1,4 +1,4 @@
-import { Function } from '@core-fusion/context';
+import { Function } from '@nodelith/context';
 import { ControllerMethodMetadata } from './controller-method-metadata';
 
 export type ControllerMethodDescriptor = TypedPropertyDescriptor<

@@ -1,4 +1,4 @@
-import { Value, ValueObject } from '@core-fusion/context';
+import { Value, ValueObject } from '../value';
 
 export type Filter<Filterable extends Value> = 
   Filterable extends number ? number | number[] :

@@ -1,5 +1,5 @@
 export class ValidatorError extends Error {
-  public readonly path?: string
+  public readonly path?: string | undefined
 
   constructor(message?: string, path?: string) {
     super(message)

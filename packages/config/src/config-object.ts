@@ -1,3 +1,3 @@
-import { NestedRecord } from '@core-fusion/context';
+import { NestedRecord } from '@nodelith/context';
 
 export type ConfigObject = NestedRecord<string, string | number | boolean>

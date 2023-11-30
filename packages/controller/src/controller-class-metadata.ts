@@ -1,4 +1,4 @@
-import { Constructor } from '@core-fusion/context';
+import { Constructor } from '@nodelith/context';
 import { randomUUID } from 'crypto';
 
 export class ControllerClassMetadata {
