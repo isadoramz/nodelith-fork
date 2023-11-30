@@ -24,10 +24,10 @@
   },
   "devDependencies": {
     "@nodelith/context": "^0.7.0",
-    "@nodelith/joi": "^0.0.7"
+    "@nodelith/joi": "^0.7.0"
   },
   "peerDependencies": {
-    "@nodelith/context": "^0.2.27",
-    "@nodelith/joi": "^0.0.7"
+    "@nodelith/context": "^0.7.0",
+    "@nodelith/joi": "^0.7.0"
   }
 }

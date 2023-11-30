@@ -26,6 +26,6 @@
     "@nodelith/context": "^0.7.0"
   },
   "peerDependencies": {
-    "@nodelith/context": "^0.2.27"
+    "@nodelith/context": "^0.7.0"
   }
 }
