@@ -108,7 +108,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > /home/circleci/.npmrc
       - run:
           name: "Publish Package to NPM registry"
-          command: npx lerna publish from-git 
+          command: npx lerna publish from-git --yes
   
  
 workflows:
