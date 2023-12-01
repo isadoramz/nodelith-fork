@@ -3,17 +3,27 @@ import {
 } from 'mongodb'
 
 import { MongoRepository } from '@nodelith/mongodb'
-import { EntityProperties } from '@nodelith/context'
+import { EntityProperties, Repository } from '@nodelith/context'
 import { MongoTestEntity } from './mongo-repository-test-entity'
 import { MongoTestContext } from './mongo-repository-test-context'
 
+beforeAll(async () => {
+  await MongoTestContext.startMemoryServer()
+})
+
+afterAll(async () => {
+  await MongoTestContext.stopMemoryServer()
+})
+
 describe('MongoRepository', () => {
   const mongoTestContext = new MongoTestContext()
-  
-  const mongoRepository = new MongoRepository<MongoTestEntity>(
-    mongoTestContext.database, 
-    mongoTestContext.testCollectionName
-  )
+
+  const createTestRepository = (): Repository<MongoTestEntity> => {
+    return new MongoRepository<MongoTestEntity>(
+      mongoTestContext.resolveDatabase(),
+      mongoTestContext.collectionName
+    )
+  }
 
   beforeAll(async () => {
     await mongoTestContext.openConnection()
@@ -85,7 +95,9 @@ describe('MongoRepository', () => {
     it('should return all entities', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
 
       expect(entities.length).toBe(6)
 
@@ -134,10 +146,12 @@ describe('MongoRepository', () => {
     it('should return entities by id', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
 
       for (const entity of entities) {
-        const foundEntity = await mongoRepository.getById(entity.id)
+        const foundEntity = await testReopsitory.getById(entity.id)
         expect(foundEntity).toEqual(entity)
       }
     })
@@ -145,7 +159,9 @@ describe('MongoRepository', () => {
     it('should return undefined when the given id is invalid', async () => {
       await seedTestCollection()
 
-      const entity = await mongoRepository.getById('some-invalid-entity-id')
+      const testReopsitory = createTestRepository()
+
+      const entity = await testReopsitory.getById('some-invalid-entity-id')
 
       expect(entity).toEqual(undefined)
     })
@@ -153,9 +169,11 @@ describe('MongoRepository', () => {
     it('should return undefined when there is not an entity with the given id', async () => {
       await seedTestCollection()
 
+      const testReopsitory = createTestRepository()
+
       const unexistentEntityId = new MongodbObjectId()
 
-      const entity = await mongoRepository.getById(unexistentEntityId.toString())
+      const entity = await testReopsitory.getById(unexistentEntityId.toString())
 
       expect(entity).toBe(undefined)
     })
@@ -165,7 +183,9 @@ describe('MongoRepository', () => {
     it('should return empty array if all given ids are invalid', async () => {
       await seedTestCollection()
 
-      const foundEntities = await mongoRepository.getByIds([
+      const testReopsitory = createTestRepository()
+
+      const foundEntities = await testReopsitory.getByIds([
         'some-invalid-object-id',
         'another-invalid-object-id',
       ])
@@ -176,11 +196,13 @@ describe('MongoRepository', () => {
     it('should return array with entities that match give ids', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       const firstEntityId = entities[0]?.id!
       const secondEntityId = entities[1]?.id!
 
-      const foundEntities = await mongoRepository.getByIds([
+      const foundEntities = await testReopsitory.getByIds([
         firstEntityId,
         secondEntityId,
       ])
@@ -195,11 +217,14 @@ describe('MongoRepository', () => {
   describe('deleteById', () => {
     it('should delete element by id', async () => {
       await seedTestCollection()
-      const entities = await mongoRepository.getAll()
+
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
 
       for (const entity of entities) {
-        await mongoRepository.deleteById(entity.id)
-        const remainingEntities = await mongoRepository.getAll()
+        await testReopsitory.deleteById(entity.id)
+        const remainingEntities = await testReopsitory.getAll()
 
         expect(remainingEntities.every((remainingEntity) => {
           return remainingEntity.id !==  entity.id
@@ -210,7 +235,9 @@ describe('MongoRepository', () => {
     it('should accept an invalid id without throwing an error', async () => {
       await seedTestCollection()
 
-      const entity = await mongoRepository.deleteById('some-invalid-entity-id')
+      const testReopsitory = createTestRepository()
+
+      const entity = await testReopsitory.deleteById('some-invalid-entity-id')
 
       expect(entity).toEqual(undefined)
     })
@@ -218,9 +245,11 @@ describe('MongoRepository', () => {
     it('should accept an unmatching id without throwing an error', async () => {
       await seedTestCollection()
 
+      const testReopsitory = createTestRepository()
+
       const unexistentEntityId = new MongodbObjectId()
 
-      const entity = await mongoRepository.deleteById(unexistentEntityId.toString())
+      const entity = await testReopsitory.deleteById(unexistentEntityId.toString())
 
       expect(entity).toBe(undefined)
     })
@@ -230,7 +259,9 @@ describe('MongoRepository', () => {
     it('should accept an invalid ids without throwing an error', async () => {
       await seedTestCollection()
 
-      const entity = await mongoRepository.deleteByIds([
+      const testReopsitory = createTestRepository()
+
+      const entity = await testReopsitory.deleteByIds([
         'another-invalid-entity-id',
         'some-invalid-entity-id',
       ])
@@ -241,16 +272,18 @@ describe('MongoRepository', () => {
     it('should delete elements by ids', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       const firstEntityId = entities[0]?.id!
       const secondEntityId = entities[1]?.id!
 
-      await mongoRepository.deleteByIds([
+      await testReopsitory.deleteByIds([
         firstEntityId,
         secondEntityId,
       ])
 
-      const remainingEntities = await mongoRepository.getAll()
+      const remainingEntities = await testReopsitory.getAll()
 
       expect(remainingEntities.every(({ id }) => {
         return id !==  firstEntityId && id !== secondEntityId
@@ -263,17 +296,19 @@ describe('MongoRepository', () => {
     it('should update entity', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       const someEntityId = entities[0]?.id!
 
-      await mongoRepository.updateById(someEntityId, {
+      await testReopsitory.updateById(someEntityId, {
         stringProperty: 'ABC',
         numberProperty: 321,
         dateProperty: new Date(1000),
         booleanProperty: false,
       })
 
-      const updatedEntity = await mongoRepository.getById(someEntityId)
+      const updatedEntity = await testReopsitory.getById(someEntityId)
 
       expect(updatedEntity?.id).toEqual(someEntityId,)
       expect(updatedEntity?.stringProperty).toEqual('ABC')
@@ -285,10 +320,12 @@ describe('MongoRepository', () => {
     it('should return updated entity', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       const someEntityId = entities[0]?.id!
 
-      const updatedEntity = await mongoRepository.updateById(someEntityId, {
+      const updatedEntity = await testReopsitory.updateById(someEntityId, {
         stringProperty: 'ABC',
         numberProperty: 321,
         dateProperty: new Date(1000),
@@ -305,11 +342,13 @@ describe('MongoRepository', () => {
     it('should partially update entity', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       const someEntity = entities[0]
       const someEntityId = someEntity?.id!
 
-      const updatedEntity = await mongoRepository.updateById(someEntityId, {
+      const updatedEntity = await testReopsitory.updateById(someEntityId, {
         stringProperty: 'ABC',
         numberProperty: 321,
       })
@@ -333,11 +372,13 @@ describe('MongoRepository', () => {
         optionalBooleanProperty: false,
       }])
 
-      const entityCount = await mongoRepository.countAll()
+      const testReopsitory = createTestRepository()
+
+      const entityCount = await testReopsitory.countAll()
       
       expect(entityCount).toBe(1)
 
-      const [ someEntity ] = await mongoRepository.getAll()
+      const [ someEntity ] = await testReopsitory.getAll()
       
       expect(someEntity?.stringProperty).toEqual('AAA')
       expect(someEntity?.numberProperty).toEqual(123)
@@ -348,7 +389,7 @@ describe('MongoRepository', () => {
       expect(someEntity?.optionalDateProperty).toEqual(new Date(20))
       expect(someEntity?.optionalBooleanProperty).toEqual(false)
 
-      const updateEntityResult = await mongoRepository.updateById(someEntity?.id!, {
+      const updateEntityResult = await testReopsitory.updateById(someEntity?.id!, {
         optionalStringProperty: undefined,
         optionalNumberProperty: undefined,
         optionalDateProperty: undefined,
@@ -365,7 +406,7 @@ describe('MongoRepository', () => {
       expect("optionalDateProperty" in updateEntityResult).toBe(false)
       expect("optionalBooleanProperty" in updateEntityResult).toBe(false)
 
-      const updatedEntity = await mongoRepository.getById(someEntity?.id!)
+      const updatedEntity = await testReopsitory.getById(someEntity?.id!)
 
       expect(updatedEntity).toBeDefined()
       expect(updatedEntity?.id).toEqual(someEntity?.id)
@@ -385,11 +426,13 @@ describe('MongoRepository', () => {
     it('should update entities', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       const someEntityId = entities[0]?.id!
       const anotherEntityId = entities[1]?.id!
 
-      await mongoRepository.updateByIds([
+      await testReopsitory.updateByIds([
         someEntityId,
         anotherEntityId,
       ], {
@@ -399,7 +442,7 @@ describe('MongoRepository', () => {
         booleanProperty: false,
       })
 
-      const updatedEntities = await mongoRepository.getByIds([
+      const updatedEntities = await testReopsitory.getByIds([
         someEntityId,
         anotherEntityId,
       ])
@@ -424,11 +467,13 @@ describe('MongoRepository', () => {
     it('should return updated entities', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       const someEntityId = entities[0]?.id!
       const anotherEntityId = entities[1]?.id!
 
-      const updatedEntities = await mongoRepository.updateByIds([
+      const updatedEntities = await testReopsitory.updateByIds([
         someEntityId,
         anotherEntityId,
       ], {
@@ -454,12 +499,14 @@ describe('MongoRepository', () => {
     it('should partially update entities', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
       
       const someEntityId = entities[0]?.id!
       const anotherEntityId = entities[1]?.id!
 
-      await mongoRepository.updateByIds([
+      await testReopsitory.updateByIds([
         someEntityId,
         anotherEntityId,
       ], {
@@ -467,8 +514,8 @@ describe('MongoRepository', () => {
         numberProperty: 321,
       })
 
-      const someUpdatedEntity = await mongoRepository.getById(someEntityId)
-      const anotherUpdatedEntity = await mongoRepository.getById(anotherEntityId)
+      const someUpdatedEntity = await testReopsitory.getById(someEntityId)
+      const anotherUpdatedEntity = await testReopsitory.getById(anotherEntityId)
 
       expect(someUpdatedEntity?.id).toEqual(someEntityId)
       expect(someUpdatedEntity?.stringProperty).toEqual('ABC')
@@ -507,11 +554,13 @@ describe('MongoRepository', () => {
         }
       ])
 
-      const entityCount = await mongoRepository.countAll()
+      const testReopsitory = createTestRepository()
+
+      const entityCount = await testReopsitory.countAll()
       
       expect(entityCount).toBe(2)
 
-      const [ someEntity, anotherEntity ] = await mongoRepository.getAll()
+      const [ someEntity, anotherEntity ] = await testReopsitory.getAll()
 
       expect(someEntity?.stringProperty).toEqual('AAA')
       expect(someEntity?.numberProperty).toEqual(12)
@@ -534,7 +583,7 @@ describe('MongoRepository', () => {
       const [ 
         someEntityUpdateResult, 
         anotherEntityUpdateResult
-      ] = await mongoRepository.updateByIds([
+      ] = await testReopsitory.updateByIds([
         someEntity?.id!,
         anotherEntity?.id!,
       ], {
@@ -568,7 +617,7 @@ describe('MongoRepository', () => {
       const [
         someUpdatedEntity,
         anotherUpdatedEntity 
-      ] = await mongoRepository.getAll()
+      ] = await testReopsitory.getAll()
 
       expect(someUpdatedEntity?.stringProperty).toEqual('AAA')
       expect(someUpdatedEntity?.numberProperty).toEqual(12)
@@ -594,6 +643,8 @@ describe('MongoRepository', () => {
 
   describe('createOne', () => {
     it('It should create one entity', async () => {
+      const testReopsitory = createTestRepository()
+
       const entityProperties: EntityProperties<MongoTestEntity> = {
         numberProperty:  1,
         dateProperty: new Date(),
@@ -601,9 +652,9 @@ describe('MongoRepository', () => {
         booleanProperty: true,
       }
 
-      const createdEntity = await mongoRepository.createOne(entityProperties)
+      const createdEntity = await testReopsitory.createOne(entityProperties)
 
-      const foundEntity = await mongoRepository.getById(createdEntity.id)
+      const foundEntity = await testReopsitory.getById(createdEntity.id)
 
       expect(foundEntity).toEqual(createdEntity)
     })
@@ -611,6 +662,8 @@ describe('MongoRepository', () => {
 
   describe('createMany', () => {
     it('It should create many entities', async () => {
+      const testReopsitory = createTestRepository()
+
       const someEntityProperties: EntityProperties<MongoTestEntity> = {
         numberProperty:  1,
         dateProperty: new Date(0),
@@ -625,12 +678,12 @@ describe('MongoRepository', () => {
         booleanProperty: false,
       }
 
-      const createdEntities = await mongoRepository.createMany([
+      const createdEntities = await testReopsitory.createMany([
         someEntityProperties, 
         anotherEntityProperties,
       ])
 
-      const foundEntities = await mongoRepository.getByIds(createdEntities.map(entity => entity.id))
+      const foundEntities = await testReopsitory.getByIds(createdEntities.map(entity => entity.id))
 
       expect(foundEntities).toEqual(expect.arrayContaining(createdEntities))
     })
@@ -640,8 +693,10 @@ describe('MongoRepository', () => {
     it('should count all entities', async () => {
       await seedTestCollection()
 
-      const entities = await mongoRepository.getAll()
-      const count = await mongoRepository.countAll()
+      const testReopsitory = createTestRepository()
+
+      const entities = await testReopsitory.getAll()
+      const count = await testReopsitory.countAll()
 
       expect(entities.length).toBe(count)
     })
