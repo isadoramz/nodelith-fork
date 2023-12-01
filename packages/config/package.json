@@ -1,7 +1,7 @@
 {
   "name": "@nodelith/config",
   "license": "MIT",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -27,7 +27,7 @@
     "build": "rimraf ./lib/* && tsc --project build.json"
   },
   "devDependencies": {
-    "@nodelith/context": "^0.7.0",
+    "@nodelith/context": "^0.7.1",
     "@types/express": "^4.17.17",
     "joi": "^17.9.2"
   },
