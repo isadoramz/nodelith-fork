@@ -2,26 +2,34 @@ import { Value, Validator, Constructor } from '@nodelith/context';
 import joi, { Schema, ValidationResult } from 'joi';
 
 export class JoiValidator<V extends Value> implements Validator<V> {
-  constructor(
+
+  public static create<V extends Value>(
+    schema: Schema<V>, 
+    errorClass?: Constructor<Error>,
+  ): Validator<V> {
+    return new JoiValidator(schema, errorClass)
+  }
+
+  public constructor(
     private readonly schema: Schema<V>, 
     private readonly errorClass: Constructor<Error> = Error
   ) {}
 
-  cast(value: unknown): value is V {
+  public cast(value: unknown): value is V {
     return this.validate(value);
   }
 
-  validate(value: unknown): boolean {
+  public validate(value: unknown): boolean {
     const { error } = this.validateAgainstSchema(value);
     return !error;
   }
 
-  assert(value: unknown): true | void {
+  public assert(value: unknown): true | void {
     const { error } = this.validateAgainstSchema(value);
     return error ? this.throwError(error.message) : true;
   }
 
-  extractValidationError(value: unknown): Error | undefined {
+  public extractValidationError(value: unknown): Error | undefined {
     const validationResult = this.validateAgainstSchema(value);
     return validationResult.error
       ? this.mapError(validationResult.error)
