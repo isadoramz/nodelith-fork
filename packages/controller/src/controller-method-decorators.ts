@@ -1,9 +1,9 @@
 
-import { Schema } from 'joi';
-import { HttpMethod, HttpStatus } from '@nodelith/http';
-import { createBodySchemaRequestHandler, createPrincipalAuthorizationRequestHandler } from './controller-request-handlers';
+import { createBodyValidationRequestHandler, createPrincipalAuthorizationRequestHandler } from './controller-request-handlers';
 import { ControllerMethodDescriptor } from './controller-method-descriptor';
 import { ControllerMethodMetadata } from './controller-method-metadata'
+import { HttpMethod, HttpStatus } from '@nodelith/http';
+import { Validator } from '@nodelith/context';
 
 export function AuthorizePrincipal(principalType: string) {
   return AuthorizePrincipals(principalType)
@@ -17,10 +17,10 @@ export function AuthorizePrincipals(...principalTypes: Array<string>) {
   };
 }
 
-export function BodySchema(bodySchema: Schema) {
+export function BodyValidator(validator: Validator) {
   return (_: unknown, __: string, descriptor: ControllerMethodDescriptor) => {
     return ControllerMethodMetadata.attach(descriptor, { 
-      bodyValidationHandler: createBodySchemaRequestHandler(bodySchema)
+      bodyValidationHandler: createBodyValidationRequestHandler(validator)
     });
   };
 }

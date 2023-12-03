@@ -7,7 +7,7 @@ import { ControllerMethodMetadata } from './controller-method-metadata'
 import { createControllerRequestHandler } from './controller-request-handlers';
 
 export class ControllerResolver {
-
+  
   private static readonly DEFAULT_PATH = '/'
 
   private readonly requestHandlers: Express.RequestHandler[] = []

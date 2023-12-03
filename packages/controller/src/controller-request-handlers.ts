@@ -1,9 +1,7 @@
-import * as Joi from 'joi'
 import * as Express from 'express';
-import { Function } from '@nodelith/context'
-import { JoiValidator } from '@nodelith/joi'
+import { Function, Validator } from '@nodelith/context'
 import { FunctionUtils } from '@nodelith/utils';
-import { HttpCode, HttpOk, InvalidRequestBodyError, UnauthorizedError } from '@nodelith/http'
+import { HttpCode, HttpOk, UnauthorizedError } from '@nodelith/http'
 import { ControllerRequest } from './controller-request';
 
 export function createControllerRequestHandler<C>(instance: C, key: keyof C, httpCode?: HttpCode): Express.RequestHandler | undefined {
@@ -39,16 +37,6 @@ export function createControllerRequestHandler<C>(instance: C, key: keyof C, htt
   }
 }
 
-export function createBodySchemaRequestHandler(schema: Joi.Schema): Express.RequestHandler {
-  const validator = new JoiValidator(schema, InvalidRequestBodyError)
-
-  return (req: ControllerRequest, _: Express.Response, next: Express.NextFunction) => {
-    if(validator.assert(req.body)) {
-      return next()
-    }
-  }
-}
-
 export function createPrincipalAuthorizationRequestHandler(...principalTypes: Array<string>): Express.RequestHandler {
   return (req: ControllerRequest, _: Express.Response, next: Express.NextFunction) => {
     if(!req.principal?.type || !principalTypes.includes(req.principal?.type)) {
@@ -56,5 +44,13 @@ export function createPrincipalAuthorizationRequestHandler(...principalTypes: Ar
     }
 
      next()
+  }
+}
+
+export function createBodyValidationRequestHandler(validator: Validator): Express.RequestHandler {
+  return (req: ControllerRequest, _: Express.Response, next: Express.NextFunction) => {
+    if(validator.assert(req.body)) {
+      return next()
+    }
   }
 }
