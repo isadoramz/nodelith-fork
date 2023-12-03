@@ -1,7 +1,4 @@
-import {
-  ObjectId as MongodbObjectId
-} from 'mongodb'
-
+import { ObjectId as MongodbObjectId } from 'mongodb'
 import { MongoRepository } from '@nodelith/mongodb'
 import { EntityProperties, Repository } from '@nodelith/context'
 import { MongoTestEntity } from './mongo-repository-test-entity'
