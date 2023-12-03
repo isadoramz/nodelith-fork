@@ -1,7 +1,7 @@
 {
   "name": "@nodelith/mongodb",
   "license": "MIT",
-  "version": "0.7.1",
+  "version": "0.7.3",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -31,7 +31,7 @@
     "mongodb": "^5.2.0"
   },
   "devDependencies": {
-    "@nodelith/context": "^0.7.1",
+    "@nodelith/context": "^0.7.3",
     "@nodelith/utils": "^0.7.1",
     "mongodb": "^5.2.0",
     "mongodb-memory-server": "^9.1.1"

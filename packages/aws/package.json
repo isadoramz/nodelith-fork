@@ -1,7 +1,7 @@
 {
   "name": "@nodelith/aws",
   "license": "MIT",
-  "version": "0.7.1",
+  "version": "0.7.3",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -27,12 +27,12 @@
     "build": "rimraf ./lib/* && tsc --project build.json"
   },
   "devDependencies": {
-    "@nodelith/context": "^0.7.0",
-    "@nodelith/config": "^0.7.1"
+    "@nodelith/config": "^0.7.3",
+    "@nodelith/context": "^0.7.3"
   },
   "peerDependencies": {
-    "@nodelith/context": "^0.7.0",
-    "@nodelith/config": "^0.7.1"
+    "@nodelith/config": "^0.7.1",
+    "@nodelith/context": "^0.7.0"
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.465.0"
