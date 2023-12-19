@@ -1,4 +1,5 @@
-import { Value, Validator, Constructor } from '@nodelith/context';
+import { Constructor } from '@nodelith/utilities'
+import { Value, Validator } from '@nodelith/context';
 import joi, { Schema, ValidationResult } from 'joi';
 
 export class JoiValidator<V extends Value> implements Validator<V> {

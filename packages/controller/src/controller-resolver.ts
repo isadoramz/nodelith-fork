@@ -1,7 +1,7 @@
 import { join } from 'path';
 import * as Express from 'express';
 import { Container } from '@nodelith/container'
-import { Constructor, Function } from '@nodelith/context';
+import { Constructor, FactoryFunction } from '@nodelith/utilities';
 import { ControllerClassMetadata } from './controller-class-metadata'
 import { ControllerMethodMetadata } from './controller-method-metadata'
 import { createControllerRequestHandler } from './controller-request-handlers';
@@ -18,14 +18,14 @@ export class ControllerResolver {
     private readonly container: Container
   ) {}
 
-  public useRequestHandler(handlerFactory: Function<Express.RequestHandler>): void {
+  public useRequestHandler(handlerFactory: FactoryFunction<Express.RequestHandler>): void {
     const handler = this.container.resolveFunction(handlerFactory)
     this.requestHandlers.push((request, response, next) => {
       Promise.resolve(handler(request, response, next)).catch(next)
     })
   }
 
-  public useErrorHandler(errorHandlerFactory: Function<Express.ErrorRequestHandler>): void {
+  public useErrorHandler(errorHandlerFactory: FactoryFunction<Express.ErrorRequestHandler>): void {
     const errorHandler = this.container.resolveFunction(errorHandlerFactory)
     this.errorHandlers.push((error, request, response, next) => {
       Promise.resolve(errorHandler(error, request, response, next)).catch(next)

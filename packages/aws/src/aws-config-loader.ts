@@ -1,6 +1,6 @@
 import { ConfigLoader } from '@nodelith/config'
 import { SSM } from '@aws-sdk/client-ssm'
-import * as path from "path";
+import * as path from 'path';
 
 export class AwsConfigLoader implements ConfigLoader {
   private ssmPath?: string
