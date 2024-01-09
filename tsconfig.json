@@ -37,6 +37,7 @@
       "@nodelith/config": ["packages/config/src"],
       "@nodelith/mongodb": ["packages/mongodb/src"],
       "@nodelith/context": ["packages/context/src"],
+      "@nodelith/express": ["packages/express/src"],
       "@nodelith/container": ["packages/container/src"],
       "@nodelith/utilities": ["packages/utilities/src"],
       "@nodelith/controller": ["packages/controller/src"],
