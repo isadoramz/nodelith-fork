@@ -1,0 +1,46 @@
+{
+  "name": "@nodelith/example",
+  "license": "MIT",
+  "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [ "./dist" ],
+  "private": true,
+  "keywords": [
+    "typescript",
+    "javascript",
+    "container",
+    "express",
+    "ioc",
+    "di"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node dist/server.js",
+    "test": "jest --passWithNoTests --config ./jest.json",
+    "build": "rimraf ./dist/* && tsc --project build.json && tsc-alias"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@nodelith/http": "^0.7.2",
+    "@nodelith/express": "^0.7.3",
+    "@nodelith/utilities": "^0.7.3",
+    "@nodelith/controller": "^0.7.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.4.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.2",
+    "rimraf": "^5.0.1",
+    "jest": "^29.4.3",
+    "ts-jest": "^29.0.5",
+    "tsc-alias": "^1.8.8",
+    "tsconfig-paths": "^4.2.0"
+  }
+}
+
+
+
