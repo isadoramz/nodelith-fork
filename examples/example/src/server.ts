@@ -13,7 +13,6 @@ async function start() {
 
   const container = new ExpressContainer()
 
- 
   container.registerValue('logger', console)
   container.registerValue('configProfile', Api.configProfile)
   container.registerValue('configDefaults', Api.configDefaults)
