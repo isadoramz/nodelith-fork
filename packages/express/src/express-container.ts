@@ -54,6 +54,7 @@ export class ExpressContainer extends Container {
           body: request.body,
           query: request.query,
           params: request.params,
+          headers: request.headers,
         }[argumentIdentifier] ?? request.params[argumentIdentifier]
       })
     }
