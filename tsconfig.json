@@ -33,6 +33,7 @@
       "@nodelith/aws": ["packages/aws/src"],
       "@nodelith/joi": ["packages/joi/src"],
       "@nodelith/http": ["packages/http/src"],
+      "@nodelith/redis": ["packages/redis/src"],
       "@nodelith/config": ["packages/config/src"],
       "@nodelith/mongodb": ["packages/mongodb/src"],
       "@nodelith/context": ["packages/context/src"],
