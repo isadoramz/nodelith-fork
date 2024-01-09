@@ -26,8 +26,8 @@
     "build": "rimraf ./lib/* && tsc --project build.json"
   },
   "peerDependencies": {
-    "@nodelith/context": "^0.2.27",
-    "@nodelith/utilities": "^0.2.24",
+    "@nodelith/context": "^0.7.5",
+    "@nodelith/utilities": "^0.7.4",
     "mongodb": "^5.2.0"
   },
   "devDependencies": {

@@ -27,12 +27,12 @@
   },
   "peerDependencies": {
     "@nodelith/context": "^0.7.5",
-    "@nodelith/utilities": "^0.2.24",
+    "@nodelith/utilities": "^0.7.4",
     "redis": "^4.6.12"
   },
   "devDependencies": {
     "@nodelith/context": "^0.7.5",
-    "@nodelith/utilities": "^0.7.1",
+    "@nodelith/utilities": "^0.7.4",
     "redis": "^4.6.12"
   }
 }

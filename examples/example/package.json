@@ -26,7 +26,7 @@
     "express": "^4.18.2",
     "@nodelith/http": "^0.7.2",
     "@nodelith/express": "^0.7.3",
-    "@nodelith/utilities": "^0.7.3",
+    "@nodelith/utilities": "^0.7.4",
     "@nodelith/controller": "^0.7.3"
   },
   "devDependencies": {
