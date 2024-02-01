@@ -1,5 +1,4 @@
 import { Constructor } from '@nodelith/utilities';
-import { randomUUID } from 'crypto';
 
 export class ControllerClassMetadata {
 
@@ -9,7 +8,7 @@ export class ControllerClassMetadata {
   
   public readonly description?: string;
 
-  private static readonly METADATA_KEY = randomUUID();
+  private static readonly METADATA_KEY = Symbol()
 
   public static attach(constructor: Constructor, metadata: ControllerClassMetadata): Constructor {
     const currentMetadata: ControllerClassMetadata = constructor[ControllerClassMetadata.METADATA_KEY] ?? {};

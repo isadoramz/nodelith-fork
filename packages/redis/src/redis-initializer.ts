@@ -1,8 +1,10 @@
 import { Initializer } from '@nodelith/context';
 import { RedisConfig } from './redis-config'
-import { createClient } from 'redis'
+import { RedisClientType, createClient } from 'redis'
 
 export class RedisInitializer implements Initializer {
+  private redisClient?: RedisClientType
+
   public constructor(
     private readonly redisConfig: RedisConfig
   ) {}
@@ -23,10 +25,18 @@ export class RedisInitializer implements Initializer {
   public async initialize() {
     const url = this.getConnectionUrl()
 
-    const redisClient = createClient({ url })
+    this.redisClient = createClient({ url })
 
-    await redisClient.connect()
+    this.redisClient.connect()
 
-    return { redisClient }
+    this.redisClient
+
+    return { 
+      redisClient: this.redisClient
+    }
+  }
+
+  public async terminate(): Promise<void> {
+    return this.redisClient?.disconnect()
   }
 }

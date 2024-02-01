@@ -8,6 +8,10 @@ export class PetService {
     private readonly petRepository: PetRepository
   ) {}
 
+  public async getPets(): Promise<Pet[]> {
+    return this.petRepository.getAll()
+  }
+
   public async getPetById(id: string): Promise<Pet> {
     const pet = await this.petRepository.getById(id)
 

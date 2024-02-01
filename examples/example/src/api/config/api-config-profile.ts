@@ -3,9 +3,9 @@ import { number, string } from '@nodelith/joi'
 import { ApiConfig } from '@example/api'
 
 export const configProfile: ConfigInitializerProfile<ApiConfig> = {
-  serverConfig: {
-    port: ['SERVER_PORT', number()],
-    name: ['SERVER_NAME', string()],
+  expressConfig: {
+    serverPort: ['SERVER_PORT', number()],
+    serverName: ['SERVER_NAME', string()],
   },
   mongodbConfig: {
     databaseName: ['MONGODB_DATABASE_NAME', string()],

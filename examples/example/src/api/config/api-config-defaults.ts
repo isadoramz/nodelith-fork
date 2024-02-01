@@ -2,9 +2,9 @@ import { ConfigInitializerDefaults } from '@nodelith/config'
 import { ApiConfig } from '@example/api'
 
 export const configDefaults: ConfigInitializerDefaults<ApiConfig> = {
-  serverConfig: {
-    port: 3003,
-    name: 'example-api',
+  expressConfig: {
+    serverPort: 3003,
+    serverName: 'pet-api',
   },
   mongodbConfig: {
     connectionTimeout: 1000,

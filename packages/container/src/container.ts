@@ -2,7 +2,7 @@ import { AwilixContainer, InjectionModeType, LifetimeType, asClass, asFunction, 
 import { Constructor, FactoryFunction, PlainFunction } from '@nodelith/utilities'
 import { Logger, Initializer } from '@nodelith/context';
 
-export class Container {
+export class Container implements Initializer {
 
   private readonly container: AwilixContainer
 
