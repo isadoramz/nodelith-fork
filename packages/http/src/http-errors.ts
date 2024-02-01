@@ -37,10 +37,10 @@ export class NotFoundError extends HttpClientError {
   }
 }
 
-export class UnauthorizedError extends HttpClientError {
+export class AuthorizationError extends HttpClientError {
   constructor(message: string = HttpUnauthorized.message) {
     super(message, HttpUnauthorized)
-    this.name = UnauthorizedError.name
+    this.name = AuthorizationError.name
   }
 }
 

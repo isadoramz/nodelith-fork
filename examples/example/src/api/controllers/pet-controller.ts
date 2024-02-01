@@ -1,7 +1,7 @@
 import { ControllerPath, DeleteRoute, GetRoute, PatchRoute, PostRoute } from '@nodelith/controller'
 import { EntityProperties, EntityPropertiesToUpdate } from '@nodelith/context'
-import { Pet, PetService } from '@example/domain'
 import { PetDto, PetDtoConverter } from '@example/api'
+import { Pet, PetService } from '@example/domain'
 
 @ControllerPath('/pets')
 export class PetController {
@@ -9,6 +9,12 @@ export class PetController {
   public constructor(
     private readonly petService: PetService
   ) {}
+
+  @GetRoute('/')
+  public async getPets(id: string): Promise<PetDto[]> {
+    const pets = await this.petService.getPets()
+    return PetDtoConverter.convertMany(pets)
+  }
 
   @GetRoute('/:id')
   public async getPetById(id: string): Promise<PetDto> {

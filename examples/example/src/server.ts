@@ -1,9 +1,7 @@
-import express from 'express'
-
 import { AwsConfigLoader } from '@nodelith/aws'
-import { ExpressContainer } from '@nodelith/express'
 import { ConfigInitializer } from '@nodelith/config'
 import { MongodbInitializer } from '@nodelith/mongodb'
+import { ExpressConfig, ExpressContainer } from '@nodelith/express'
 
 import * as Api from '@example/api'
 import * as Domain from '@example/domain'
@@ -17,7 +15,6 @@ async function start() {
   container.registerValue('configProfile', Api.configProfile)
   container.registerValue('configDefaults', Api.configDefaults)
   
-  
   container.registerClass('configLoader', AwsConfigLoader)
   container.registerInitializer('config', ConfigInitializer)
   container.registerInitializer('mongodb', MongodbInitializer)
@@ -27,15 +24,13 @@ async function start() {
 
   await container.initialize(console)
 
-  const application = express()
-
-  application.use('/api', container.ResolveControllers(
+  const server = container.resolveExpress(
     Api.PetController,
-  ))
+  )
 
-  container.resolveFunction((serverConfig: Api.ServerConfig) => {
-    application.listen(serverConfig.port, () => {
-      console.log(`${serverConfig.name} listening on port ${serverConfig.port}`)
+  container.resolveFunction((expressConfig: ExpressConfig) => {
+    server.listen(expressConfig.serverPort, () => {
+      console.log(`${expressConfig.serverName} listening on port ${expressConfig.serverPort}`)
     })
   })
 }
