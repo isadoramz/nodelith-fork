@@ -1,4 +1,4 @@
-export * from './callback'
 export * from './constructor'
-export * from './factory'
+export * from './callback'
 export * from './function'
+export * from './factory'
