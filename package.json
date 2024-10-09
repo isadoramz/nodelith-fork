@@ -1,5 +1,5 @@
 {
-  "name": "nodelith",
+  "name": "@nodelith/root",
   "license": "MIT",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "private": true,
@@ -7,31 +7,17 @@
     "typescript",
     "javascript",
     "monorepo",
-    "toolset",
-    "lerna"
+    "toolkit"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/thomazmz/nodelith"
   },
+  "scripts": {
+    "build": "pnpm --recursive --if-present run build",
+    "test": "pnpm --recursive --if-present run test"
+  },
   "engines": {
     "node": ">=20.0.0"
-  },
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
-  "scripts": {
-    "build": "lerna run build",
-    "test": "lerna run test"
-  },
-  "devDependencies": {
-    "@types/jest": "^29.4.0",
-    "@types/node": "^20.0.0",
-    "typescript": "^5.2.2",
-    "rimraf": "^5.0.1",
-    "lerna": "^7.2.0",
-    "jest": "^29.4.3",
-    "ts-jest": "^29.0.5"
   }
 }
