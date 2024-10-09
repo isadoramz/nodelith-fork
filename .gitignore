@@ -1,9 +1,5 @@
 ## Node Specific
 **/node_modules
-**/lib
 
-## Darwin OS specific
+## Darwin OS Specific
 **/.DS_Store
-
-## Lerna specific
-**/lerna-debug.log
