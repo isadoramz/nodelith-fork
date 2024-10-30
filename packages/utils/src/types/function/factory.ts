@@ -1,3 +1,3 @@
-import { PlainFunction } from './function'
+import { PlainFunction } from './plain'
 
 export type FactoryFunction<Return = unknown> = PlainFunction<Return>
