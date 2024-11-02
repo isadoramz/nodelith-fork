@@ -21,7 +21,8 @@
   },
   "scripts": {
     "test": "jest --passWithNoTests --config ./jest.json",
-    "build": "rimraf ./dist/* && tsc"
+    "build": "rimraf ./dist/* && tsc",
+    "build:watch": "rimraf ./dist/* && tsc --watch"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",

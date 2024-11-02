@@ -15,7 +15,9 @@
   },
   "scripts": {
     "build": "pnpm --recursive --if-present run build",
-    "test": "pnpm --recursive --if-present run test"
+    "test": "pnpm --recursive --if-present run test",
+    "build:watch": "pnpm --parallel --if-present run build:watch",
+    "test:watch": "pnpm --parallel --if-present run test:watch"
   },
   "engines": {
     "node": ">=20.0.0"
