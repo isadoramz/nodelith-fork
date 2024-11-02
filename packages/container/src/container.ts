@@ -1,30 +1,30 @@
-import { AwilixContainer, InjectionModeType, LifetimeType, asClass, asFunction, asValue, createContainer } from 'awilix';
-import { ConstructorFunction, FactoryFunction, PlainFunction } from '@nodelith/utils'
-import { Logger, Initializer } from '@nodelith/core';
+import * as Awilix from 'awilix'
+import * as Core from '@nodelith/core'
+import * as Utils from '@nodelith/utils'
 
-export class Container implements Initializer {
+export class Container implements Core.Initializer {
 
-  private readonly container: AwilixContainer
+  private readonly container: Awilix.AwilixContainer
 
   private readonly initializationMetadata: {
-    readonly initializer: ConstructorFunction<Initializer>
+    readonly initializer: Utils.ConstructorFunction<Core.Initializer>
     readonly initializerKey: string
-  }[] = []
+  }[] = [];
 
-  constructor(injectionMode: InjectionModeType = 'CLASSIC') {
-    this.container = createContainer({ injectionMode })
+  constructor(injectionMode: Awilix.InjectionModeType = 'CLASSIC') {
+    this.container = Awilix.createContainer({ injectionMode })
   }
 
   public resolve<T>(registrationKey: string): T {
     return this.container.resolve<T>(registrationKey)
   }
 
-  public resolveClass<T>(constructor: ConstructorFunction<T>): T {
-    return this.container.build<T>(asClass(constructor))
+  public resolveClass<T>(constructor: Utils.ConstructorFunction<T>): T {
+    return this.container.build<T>(Awilix.asClass(constructor))
   }
 
-  public resolveFunction<T>(factory: FactoryFunction<T>): T {
-    return this.container.build<T>(asFunction(factory))
+  public resolveFunction<T>(factory: Utils.FactoryFunction<T>): T {
+    return this.container.build<T>(Awilix.asFunction(factory))
   }
 
   public registerValue(registrationKey: string, registration: unknown) {
@@ -32,26 +32,26 @@ export class Container implements Initializer {
       throw Error(`Could not complete container value registration. Registration key ${registrationKey} is already in use.`)
     }
 
-    this.container.register(registrationKey, asValue(registration))
+    this.container.register(registrationKey, Awilix.asValue(registration))
   }
 
-  public registerClass(registrationKey: string, registration: ConstructorFunction, lifetime: LifetimeType = 'SINGLETON') {
+  public registerClass(registrationKey: string, registration: Utils.ConstructorFunction, lifetime: Awilix.LifetimeType = 'SINGLETON') {
     if(this.container.registrations[registrationKey]) {
       throw Error(`Could not complete container class registration. Registration key ${registrationKey} is already in use.`)
     }
 
-    this.container.register(registrationKey, asClass(registration, { lifetime }))
+    this.container.register(registrationKey, Awilix.asClass(registration, { lifetime }))
   }
 
-  public registerFunction(registrationKey: string, registration: PlainFunction, lifetime: LifetimeType = 'SINGLETON') {
+  public registerFunction(registrationKey: string, registration: Utils.PlainFunction, lifetime: Awilix.LifetimeType = 'SINGLETON') {
     if(this.container.registrations[registrationKey]) {
       throw Error(`Could not complete container function registration. Registration key ${registrationKey} is already in use.`)
     }
 
-    this.container.register(registrationKey, asFunction(registration, { lifetime }))
+    this.container.register(registrationKey, Awilix.asFunction(registration, { lifetime }))
   }
 
-  public registerInitializer(initializerKey: string, initializer: ConstructorFunction<Initializer>) {
+  public registerInitializer(initializerKey: string, initializer: Utils.ConstructorFunction<Core.Initializer>) {
     if(this.initializationMetadata[initializerKey]) {
       throw Error(`Could not complete container initializer registration. Registration key ${initializerKey} is already in use.`)
     }
@@ -59,13 +59,13 @@ export class Container implements Initializer {
     this.initializationMetadata.push({ initializerKey, initializer })
   }
 
-  public async initialize(logger?: Logger): Promise<Record<string, any> > {
+  public async initialize(logger?: Core.Logger): Promise<Record<string, any>> {
     const initializationHash: Record<string, unknown> = {}
 
     for await (const { initializerKey, initializer } of this.initializationMetadata) {
       logger?.info(`initializing ${initializerKey}`)
       
-      const initializedRecord = await this.container.build(asClass(initializer)).initialize()
+      const initializedRecord = await this.container.build(Awilix.asClass(initializer)).initialize()
 
       for (const recordKey of Object.keys(initializedRecord)) {
         this.registerValue(recordKey, initializedRecord[recordKey])
@@ -76,9 +76,9 @@ export class Container implements Initializer {
     return initializationHash
   }
 
-  public async terminate(logger?: Logger): Promise<void> {
+  public async terminate(logger?: Core.Logger): Promise<void> {
     for await (const { initializerKey, initializer } of this.initializationMetadata) {
-      const initializerInstance = this.container.build(asClass(initializer))
+      const initializerInstance = this.container.build(Awilix.asClass(initializer))
 
       if(initializerInstance.terminate) {
         logger?.info(`terminating ${initializerKey}`)
