@@ -1,6 +1,6 @@
-import { PlainFunction } from '../types'
+import { Function } from '@nodelith/types'
 
-export const pipe = <T>(initialValue: T, ...modifiers: PlainFunction[]): Promise<T> => {
+export const pipe = <T>(initialValue: T, ...modifiers: Function[]): Promise<T> => {
   return modifiers.reduce(async (value, modifierFunction) => {
     const resolvedValue = await value
     return modifierFunction(resolvedValue)

@@ -1,6 +1,6 @@
 import { merge } from './merge'
 
-describe('object utils', () => {
+describe('object utilities', () => {
   describe('merge', () => {
     it('should merge different keys', () => {
       const source: any = {

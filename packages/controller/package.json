@@ -28,7 +28,8 @@
   "devDependencies": {
     "@nodelith/http": "workspace:*",
     "@nodelith/core": "workspace:*",
-    "@nodelith/utils": "workspace:*",
+    "@nodelith/types": "workspace:*",
+    "@nodelith/utilities": "workspace:*",
     "@types/jest": "^29.4.0",
     "@types/node": "^20.0.0",
     "typescript": "^5.2.2",

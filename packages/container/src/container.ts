@@ -1,13 +1,13 @@
 import * as Awilix from 'awilix'
 import * as Core from '@nodelith/core'
-import * as Utils from '@nodelith/utils'
+import * as Types from '@nodelith/types'
 
 export class Container implements Core.Initializer {
 
   private readonly container: Awilix.AwilixContainer
 
   private readonly initializationMetadata: {
-    readonly initializer: Utils.ConstructorFunction<Core.Initializer>
+    readonly initializer: Types.Constructor<Core.Initializer>
     readonly initializerKey: string
   }[] = [];
 
@@ -19,11 +19,11 @@ export class Container implements Core.Initializer {
     return this.container.resolve<T>(registrationKey)
   }
 
-  public resolveClass<T>(constructor: Utils.ConstructorFunction<T>): T {
+  public resolveClass<T>(constructor: Types.Constructor<T>): T {
     return this.container.build<T>(Awilix.asClass(constructor))
   }
 
-  public resolveFunction<T>(factory: Utils.FactoryFunction<T>): T {
+  public resolveFunction<T>(factory: Types.Factory<T>): T {
     return this.container.build<T>(Awilix.asFunction(factory))
   }
 
@@ -35,7 +35,7 @@ export class Container implements Core.Initializer {
     this.container.register(registrationKey, Awilix.asValue(registration))
   }
 
-  public registerClass(registrationKey: string, registration: Utils.ConstructorFunction, lifetime: Awilix.LifetimeType = 'SINGLETON') {
+  public registerClass(registrationKey: string, registration: Types.Constructor, lifetime: Awilix.LifetimeType = 'SINGLETON') {
     if(this.container.registrations[registrationKey]) {
       throw Error(`Could not complete container class registration. Registration key ${registrationKey} is already in use.`)
     }
@@ -43,7 +43,7 @@ export class Container implements Core.Initializer {
     this.container.register(registrationKey, Awilix.asClass(registration, { lifetime }))
   }
 
-  public registerFunction(registrationKey: string, registration: Utils.PlainFunction, lifetime: Awilix.LifetimeType = 'SINGLETON') {
+  public registerFunction(registrationKey: string, registration: Types.Function, lifetime: Awilix.LifetimeType = 'SINGLETON') {
     if(this.container.registrations[registrationKey]) {
       throw Error(`Could not complete container function registration. Registration key ${registrationKey} is already in use.`)
     }
@@ -51,7 +51,7 @@ export class Container implements Core.Initializer {
     this.container.register(registrationKey, Awilix.asFunction(registration, { lifetime }))
   }
 
-  public registerInitializer(initializerKey: string, initializer: Utils.ConstructorFunction<Core.Initializer>) {
+  public registerInitializer(initializerKey: string, initializer: Types.Constructor<Core.Initializer>) {
     if(this.initializationMetadata[initializerKey]) {
       throw Error(`Could not complete container initializer registration. Registration key ${initializerKey} is already in use.`)
     }

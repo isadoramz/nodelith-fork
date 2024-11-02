@@ -1,5 +1,5 @@
 {
-  "name": "@nodelith/utils",
+  "name": "@nodelith/types",
   "license": "MIT",
   "version": "0.8.0",
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
@@ -12,8 +12,7 @@
   "keywords": [
     "typescript",
     "javascript",
-    "utilities",
-    "utils"
+    "types"
   ],
   "engines": {
     "node": ">=20.0.0"

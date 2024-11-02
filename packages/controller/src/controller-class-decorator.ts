@@ -1,22 +1,22 @@
-import * as Utils from '@nodelith/utils';
+import * as Types from '@nodelith/types'
 import * as Controller from './controller-class-metadata';
 
 export function Path(path: string) {
-  return (constructor: Utils.ConstructorFunction): Utils.ConstructorFunction => {
+  return (constructor: Types.Constructor): Types.Constructor => {
     Controller.ControllerClassMetadata.attach(constructor, { path })
     return constructor;
   };
 }
 
 // export function Name(name: string) {
-//   return (constructor: Utils.ConstructorFunction): Utils.ConstructorFunction => {
+//   return (constructor: Types.Constructor): Types.Constructor => {
 //     Controller.ControllerClassMetadata.attach(constructor, { name })
 //     return constructor
 //   };
 // }
 
 // export function Description(description: string) {
-//   return (constructor: Utils.ConstructorFunction): Utils.ConstructorFunction => {
+//   return (constructor: Types.Constructor): Types.Constructor => {
 //     Controller.ControllerClassMetadata.attach(constructor, { description })
 //     return constructor;
 //   };

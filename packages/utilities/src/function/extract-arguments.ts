@@ -1,4 +1,4 @@
-import { PlainFunction } from '../types'
+import { Function } from '@nodelith/types'
 
 const functionArgumentListRegex = new RegExp(
   /(\/\/.*$)|(\/\*[\s\S]*?\*\/)|(\s*=[^,)]*(('(?:\\'|[^'\r\n])*')|("(?:\\"|[^"\r\n])*"))|(\s*=[^,)]*))/gm
@@ -6,7 +6,7 @@ const functionArgumentListRegex = new RegExp(
 
 const functionArgumentIdentifiersRegex = new RegExp(/([^\s,]+)/g)
 
-export function extractArguments(fn: PlainFunction): string[] {
+export function extractArguments(fn: Function): string[] {
   const functionString = fn.toString().replace(functionArgumentListRegex, '')
 
   const argumentDeclarationFirstIndex = functionString.indexOf('(') + 1

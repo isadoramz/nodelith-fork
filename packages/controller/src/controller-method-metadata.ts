@@ -1,5 +1,5 @@
 import * as Http from '@nodelith/http';
-import * as Utils from '@nodelith/utils';
+import * as Types from '@nodelith/types';
 
 export class ControllerMethodMetadata {
 
@@ -16,7 +16,7 @@ export class ControllerMethodMetadata {
   public readonly description?: string | undefined;
 
   public static attach(
-    descriptor: TypedPropertyDescriptor<Utils.PlainFunction & { [ControllerMethodMetadata.METADATA_KEY]?: ControllerMethodMetadata}>,
+    descriptor: TypedPropertyDescriptor<Types.Function & { [ControllerMethodMetadata.METADATA_KEY]?: ControllerMethodMetadata}>,
     metadata: ControllerMethodMetadata,
   ): PropertyDescriptor {
     if (descriptor.value) {

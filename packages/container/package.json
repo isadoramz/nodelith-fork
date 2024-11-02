@@ -29,7 +29,8 @@
   },
   "devDependencies": {
     "@nodelith/core": "workspace:*",
-    "@nodelith/utils": "workspace:*",
+    "@nodelith/types": "workspace:*",
+    "@nodelith/utilities": "workspace:*",
     "@types/jest": "^29.4.0",
     "@types/node": "^20.0.0",
     "typescript": "^5.2.2",
@@ -39,6 +40,8 @@
   },
   "peerDependencies": {
     "@nodelith/core": "workspace:*",
+    "@nodelith/types": "workspace:*",
+    "@nodelith/utilities": "workspace:*",
     "awilix": "^9.0.0"
   }
 }

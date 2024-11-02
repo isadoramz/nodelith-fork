@@ -1,4 +1,4 @@
-import * as Utils from '@nodelith/utils';
+import * as Types from '@nodelith/types';
 
 export class ControllerClassMetadata {
 
@@ -10,7 +10,7 @@ export class ControllerClassMetadata {
 
   private static readonly METADATA_KEY = Symbol()
 
-  public static attach(constructor: Utils.ConstructorFunction, metadata: ControllerClassMetadata): Utils.ConstructorFunction {
+  public static attach(constructor: Types.Constructor, metadata: ControllerClassMetadata): Types.Constructor {
     const currentMetadata: ControllerClassMetadata = constructor[ControllerClassMetadata.METADATA_KEY] ?? {};
 
     constructor[ControllerClassMetadata.METADATA_KEY] = {
@@ -22,7 +22,7 @@ export class ControllerClassMetadata {
     return constructor
   }
 
-  public static extract(constructor: Utils.ConstructorFunction): ControllerClassMetadata {
+  public static extract(constructor: Types.Constructor): ControllerClassMetadata {
     return {
       ...constructor[ControllerClassMetadata.METADATA_KEY]
     }

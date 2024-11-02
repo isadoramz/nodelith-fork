@@ -1,5 +1,4 @@
 export * from './callback'
 export * from './constructor'
 export * from './factory'
-export * from './plain'
-export * from './validator'
+export * from './function'

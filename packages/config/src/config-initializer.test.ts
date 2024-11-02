@@ -1,12 +1,12 @@
-import { ValidatorFunction } from '@nodelith/utils';
+import * as Core from '@nodelith/core';
 import { ConfigDefaults } from './config-defaults';
 import { ConfigInitializer } from './config-initializer';
 import { ConfigObjectProfile } from './config-object-profile';
 
 describe('ConfigInitializer', () => {
 
-  const validator: ValidatorFunction = (value: unknown) => {
-    return [ undefined, value ]
+  const validator: Core.ValidatorFunction = (value: unknown) => {
+    return [ undefined, value as string ]
   }
 
   const configLoaderMock = {
@@ -115,8 +115,8 @@ describe('ConfigInitializer', () => {
   })
 
   it('should throw error when validator returns error', async () => {
-    const validator: ValidatorFunction = ()  => {
-      return [ new Error('Some Validation Error'), undefined ]
+    const validator: Core.ValidatorFunction = (value: unknown)  => {
+      return [ new Core.ValidatorError('Some Validation Error'), value as string ]
     }
 
     const configProfile: ConfigObjectProfile = {
