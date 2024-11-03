@@ -41,8 +41,7 @@
   "peerDependencies": {
     "@nodelith/core": "workspace:*",
     "@nodelith/types": "workspace:*",
-    "@nodelith/utilities": "workspace:*",
-    "awilix": "^9.0.0"
+    "@nodelith/utilities": "workspace:*"
   }
 }
 
