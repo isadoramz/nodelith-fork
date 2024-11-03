@@ -1,4 +1,4 @@
-export interface Initializer<Result extends Record<string, any> = Record<string, any>> {
-  initialize(): Promise<Result>
-  terminate?(): Promise<void>
+export abstract class Initializer<Result extends Record<string, any> = Record<string, any>> {
+  abstract initialize(): Promise<Result>
+  abstract terminate?(): Promise<void>
 }
