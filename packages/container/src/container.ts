@@ -2,17 +2,17 @@ import * as Types from '@nodelith/types'
 
 export type DependencyRecord = Record<string, any>
 
-export type Resolver<V extends any = any, D extends DependencyRecord = any> = (map: D) => V
+export type Resolver<V = any, D extends DependencyRecord = DependencyRecord> = (map: D) => V
 
 export function asValue<V = any>(value: V): Resolver<V> {
     return (_dependencies: DependencyRecord) => value
 }
 
-export function asFactory<V = any, D extends DependencyRecord = any>(factory: Types.Function<V, [D]>): Resolver<V, D> {
+export function asFactory<V = any, D extends DependencyRecord = DependencyRecord>(factory: Types.Function<V, [D]>): Resolver<V, D> {
   return (dependencies: D) => factory(dependencies)
 }
 
-export function asClass<V = any, D extends DependencyRecord = any>(constructor: Types.Constructor<V, [D]>): Resolver<V, D> {
+export function asClass<V = any, D extends DependencyRecord = DependencyRecord>(constructor: Types.Constructor<V, [D]>): Resolver<V, D> {
   return (registrations: D) => new constructor(registrations)
 }
 
@@ -34,7 +34,7 @@ export class Container {
 
   public register<V = any>(key: string, resolver: Resolver<V, any>) {
     if(this.dependencies[key]) {
-      throw Error(`Could not complete container class registration. Registration key ${key} is already in use.`)
+      throw Error(`Could not complete registration. Registration key "${key}" is already in use.`)
     }
     
     this.dependencies[key] = resolver(this.dependencies as DependencyRecord)
@@ -42,7 +42,7 @@ export class Container {
 
   public resolve<V = any>(key: string): V | never {
     if(!this.dependencies[key]) {
-      throw new Error(`Could not resolve registration. Registration of key ${key} is not mapped`)
+      throw new Error(`Could not resolve registration. Registration of key "${key}" is not mapped.`)
     }
 
     return this.dependencies[key]
