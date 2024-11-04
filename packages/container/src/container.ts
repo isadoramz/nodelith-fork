@@ -29,41 +29,55 @@ export function asClass<V = any, DR extends DependencyRecord = DependencyRecord>
 }
 
 function createDependencyRecordProxy(resolverMap: ResolverMap): DependencyRecord {
-  const dependencies: DependencyMap = new Map()
+  const dependencyMap: DependencyMap = new Map()
 
-  return new Proxy({} as any, {
-    get(_, dependencyKey, dependencyRecord) {
-      if (!dependencies.has(dependencyKey)) {
-        const resolver = resolverMap.get(dependencyKey)
+  function resolveDependencyInstance(dependencyKey: DependencyKey, dependencyRecord: DependencyRecord) {
+    if (!dependencyMap.has(dependencyKey)) {
 
-        if (!resolver) {
-          throw new Error(`No resolver found for ${dependencyKey.toString()}`)
-        }
+      if(!resolverMap.has(dependencyKey)) {
+        throw new Error(`Could not resolve dependency "${dependencyKey.toString()}". Resolver is missing.`)
+      }
+      
+      const resolver = resolverMap.get(dependencyKey)
 
-        const dependencyInstance = createDependencyInstanceProxy(resolver, dependencyRecord)
-
-        dependencies.set(dependencyKey, dependencyInstance)
+      if(!resolver) {
+        throw new Error(`Could not resolve dependency "${dependencyKey.toString()}". Resolver is undefined.`)
       }
 
-      return dependencies.get(dependencyKey)
+      const dependencyInstance = createDependencyInstanceProxy(resolver, dependencyRecord)
+
+      dependencyMap.set(dependencyKey, dependencyInstance)
+    }
+
+    return dependencyMap.get(dependencyKey)
+  }
+
+  function createDependencyInstanceProxy<V>(resolver: Resolver<V>, dependencyRecord: DependencyRecord): V {
+    let resolved: boolean = false
+    let instance: V | undefined = undefined
+  
+    function resolveInstance() {
+      return resolved ? instance : instance = resolver(dependencyRecord)
+    }
+  
+    return new Proxy({} as any, {
+      set(_target, propertyKey) {
+        throw new Error(`Could not set dependency property "${propertyKey.toString()}". Dependency properties cannot be set through proxy.`)
+      },
+      get(_target, propertyKey) {        
+        return resolveInstance()![propertyKey];
+      },
+    })
+  }
+
+  return new Proxy({} as any, {
+    set(_dependencyRecordTarget, dependencyKey) {
+      throw new Error(`Could not set dependency key "${dependencyKey.toString()}". Dependencies cannot be set through proxy.`)
     },
-    set() {
-      throw new Error(`Could not set dependency key. Dependencies cannot be set directly.`)
+    get(_dependencyRecordTarget, dependencyKey, dependencyRecord) {
+      return resolveDependencyInstance(dependencyKey, dependencyRecord)
     },
   })
-}
-
-function createDependencyInstanceProxy<V>(resolver: Resolver<V>, dependencyRecord: DependencyRecord): V {
-  return new Proxy({} as any, {
-    get(dependency, propertyKey) {
-      if (!dependency.initialized) {
-        dependency.instance = resolver(dependencyRecord);
-        dependency.initialized = true;
-      }
-        
-      return dependency.instance[propertyKey];
-    }
-  });
 }
 
 export class Container {
