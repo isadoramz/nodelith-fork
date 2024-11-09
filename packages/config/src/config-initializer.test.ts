@@ -5,7 +5,7 @@ import { ConfigObjectProfile } from './config-object-profile';
 
 describe('ConfigInitializer', () => {
 
-  const validator: Core.ValidatorFunction = (value: unknown) => {
+  const validator: Core.ValidationFunction = (value: unknown) => {
     return [ undefined, value as string ]
   }
 
@@ -115,8 +115,8 @@ describe('ConfigInitializer', () => {
   })
 
   it('should throw error when validator returns error', async () => {
-    const validator: Core.ValidatorFunction = (value: unknown)  => {
-      return [ new Core.ValidatorError('Some Validation Error'), value as string ]
+    const validator: Core.ValidationFunction = (value: unknown)  => {
+      return [ new Core.ValidationError('Some Validation Error'), value as string ]
     }
 
     const configProfile: ConfigObjectProfile = {

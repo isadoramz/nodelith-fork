@@ -1,12 +1,12 @@
 import { Value } from '../value'
-import { ValidatorFunction } from './validator-function'
+import { ValidationFunction } from './validation-function'
 
 /*
  * Validates an unknown value against a schema.
  */
 export abstract class Validator<V extends Value = Value> {
 
-  abstract validate: ValidatorFunction
+  abstract validate: ValidationFunction
 
   /**
    * @description Attempts to cast a value according to the schema, acting as a type guard.

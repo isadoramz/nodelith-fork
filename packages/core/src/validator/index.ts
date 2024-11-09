@@ -1,3 +1,3 @@
 export * from './validator'
-export * from './validator-error'
-export * from './validator-function'
+export * from './validation-function'
+export * from './validation-error'

@@ -1,4 +1,4 @@
-import { ValidatorError } from './validator-error';
+import { ValidationError } from './validation-error';
 import { Value } from '../value';
 
 /**
@@ -6,4 +6,4 @@ import { Value } from '../value';
  * @returns {[V, Error | undefined]} 
  * Returns a tuple being the first element an optional validation error and the second element the validated value
  */
-export type ValidatorFunction<V extends Value = Value> = (value: unknown) => [ValidatorError | undefined, V ]
+export type ValidationFunction<V extends Value = Value> = (value: unknown) => [ValidationError | undefined, V ]
