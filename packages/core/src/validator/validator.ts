@@ -6,7 +6,10 @@ import { ValidationFunction } from './validation-function'
  */
 export abstract class Validator<V extends Value = Value> {
 
-  abstract validate: ValidationFunction
+  public abstract validate(
+    ...args: Parameters<ValidationFunction<Value>>
+  ): ReturnType<ValidationFunction<Value>>
+  
 
   /**
    * @description Attempts to cast a value according to the schema, acting as a type guard.
