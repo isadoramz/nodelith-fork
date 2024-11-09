@@ -1,0 +1,1 @@
+export type InitializationFunction<Result extends Record<string, any>> = () => Result | Promise<Result>
