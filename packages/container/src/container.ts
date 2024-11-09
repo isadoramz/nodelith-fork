@@ -1,3 +1,4 @@
+import * as Core from '@nodelith/core'
 import * as Types from '@nodelith/types'
 
 export type DependencyKey = string | symbol
@@ -11,9 +12,9 @@ export type Resolver<V = any, DR extends DependencyRecord = DependencyRecord> = 
 export type ResolverMap = Map<DependencyKey, Resolver>
 
 export function asValue<V = any>(value: V): Resolver<V> {
-    return (_dependencies: DependencyRecord) => {
-      return value
-    }
+  return (_dependencies: DependencyRecord) => {
+    return value
+  }
 }
 
 export function asFactory<V = any, DR extends DependencyRecord = DependencyRecord>(factory: Types.Function<V, [DR]>): Resolver<V, DR> {
@@ -80,21 +81,57 @@ function createDependencyRecordProxy(resolverMap: ResolverMap): DependencyRecord
   })
 }
 
-export class Container {
+export class Container implements Core.Initializer {
   private readonly resolvers: ResolverMap = new Map()
 
   private readonly dependencies: Readonly<DependencyRecord> = createDependencyRecordProxy(this.resolvers)
+
+  private readonly initializationStack: Array<string> = []
+
+  public async initialize(): Promise<Record<string, any>> {
+    const initializationRecord: Record<string, unknown> = {}
+
+    for await (const initializationKey of this.initializationStack) {
+      
+      const initializerInstance = this.resolve<Core.Initializer>(initializationKey)
+
+      const initializerRecord = initializerInstance.initialize()
+
+      if(initializerRecord) {
+        for (const key of Object.keys(initializerRecord)) {
+          this.registerValue(key, initializerRecord[key])
+          initializationRecord[key] = initializerRecord[key]
+        }
+      }
+    }
+
+    return initializationRecord
+  }
+
+  public async terminate(): Promise<void> {
+    for await (const initializationKey of this.initializationStack.reverse()) {
+      const initializerInstance = this.resolve<Core.Initializer>(initializationKey)
+
+      if(initializerInstance.terminate) {
+        await initializerInstance.terminate()
+      }
+    }
+  }
 
   public registerValue(key: string, value: any) {
     this.register(key, asValue(value))
   }
 
-  public registerFactory(key: string, factory: Types.Function<any, [DependencyRecord]>) {
+  public registerFactory(key: string, factory: Types.Function<any, [DependencyRecord]>): void {
     this.register(key, asFactory(factory))
   }
 
-  public registerClass(key: string, constructor: Types.Constructor<any, [DependencyRecord]>) {
+  public registerClass(key: string, constructor: Types.Constructor<any, [DependencyRecord]>): void {
     this.register(key, asClass(constructor))
+
+    if(Core.Initializer.isExtendedBy(constructor)) {
+      this.initializationStack.push(key)
+    }
   }
 
   public register<V = any>(dependencyKey: DependencyKey, resolver: Resolver<V, any>): void | never {
@@ -103,7 +140,6 @@ export class Container {
     }
 
     this.resolvers.set(dependencyKey, resolver)
-    console.log(`registered ${dependencyKey.toString()}`)
   }
 
   public resolve<V = any>(dependencyKey: DependencyKey): V | never {
