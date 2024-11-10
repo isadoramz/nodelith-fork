@@ -39,11 +39,12 @@ export class Module implements Core.Initializer {
   }
 
   public register(token: RegistrationToken, constructor: Types.Constructor) {
-    if(this.container.registrations.has(token)) {
+    if(this.container.has(token)) {
       throw new Error(`Could not complete registration. Registration token "${token.toString()}" is already in use.`)
     }
 
-    this.container.registrations.set(token, new Registration({
+    this.container.push(new Registration({
+      dependencies: this.container.dependencies,
       resolver: Module.constructorResolver,
       target: constructor,
       token,
@@ -54,8 +55,12 @@ export class Module implements Core.Initializer {
     }
   }
 
+  public use(module: Module) {
+    this.container.push(...module.registrations)
+  }
+
   public resolve<T = any>(token: RegistrationToken): T | never {
-    if(!this.container.registrations.has(token)) {
+    if(!this.container.has(token)) {
       throw new Error(`Could not resolve registration. Module does not contain a registration for "${token.toString()}" token.`)
     }
 
@@ -63,8 +68,8 @@ export class Module implements Core.Initializer {
   }
 
   public get registrations() {
-    return Array.from(this.container.registrations.values()).filter((registration) => {
-      return registration.access === 'public'
+    return this.container.registrations.filter((registration) => {
+      return registration.isPublic
     })
   }
 

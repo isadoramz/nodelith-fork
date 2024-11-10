@@ -15,15 +15,18 @@ export type RegistrationTarget<InstanceType = any> = Types.Constructor<InstanceT
 export type RegistrationResolver<InstanceType = any> = (target: RegistrationTarget, dependencies: RegistrationDependencies) => InstanceType
 
 export type RegistrationOptions = {
-  token: RegistrationToken
+  dependencies: Record<RegistrationToken, any>
   access?: RegistrationAccess
+  token: RegistrationToken
   target?: RegistrationTarget
   resolver?: RegistrationResolver
 }
 
 export class Registration<I = any> {
+
+  public readonly dependencies: RegistrationDependencies
   
-  public readonly access: RegistrationAccess | undefined
+  public readonly access: RegistrationAccess
   
   public readonly token: RegistrationToken
   
@@ -32,7 +35,8 @@ export class Registration<I = any> {
   public readonly resolver: RegistrationResolver<I> | undefined
 
   public constructor(options: RegistrationOptions) {
-    this.access = options.access
+    this.dependencies = options.dependencies
+    this.access = options.access ?? 'public'
     this.token = options.token
     this.target = options.target
     this.resolver = options.resolver
@@ -40,15 +44,23 @@ export class Registration<I = any> {
   
   private _instance: I | undefined
 
-  public get instance() {
-    return this._instance
-  }
-  
-  public resolve(dependencies: RegistrationDependencies): I {
+  public get instance(): I {
     if(this._instance) {
       return this._instance
     }
 
+    return this.resolve()
+  }
+
+  public get isPublic() {
+    return this.access === 'public'
+  }
+
+  public get isPrivate() {
+    return this.access === 'private'
+  }
+  
+  private resolve(): I | never {
     if(!this.target) {
       throw new Error(`Could not resolve dependency "${this.token.toString()}". Missing registration target.`)
     }
@@ -57,7 +69,7 @@ export class Registration<I = any> {
       throw new Error(`Could not resolve dependency "${this.token.toString()}". Missing registration resolver.`)
     }
 
-    const resolution = this.resolver(this.target, dependencies)
+    const resolution = this.resolver(this.target, this.dependencies)
 
     if(!resolution) {
       throw new Error(`Could not resolve dependency "${this.token.toString()}". Resolver returned undefined.`)
