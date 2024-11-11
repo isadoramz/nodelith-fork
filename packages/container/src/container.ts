@@ -2,13 +2,13 @@ import { RegistrationToken, RegistrationMap, Registration } from './registration
 
 export class Container {
 
+  public readonly dependencies: Record<RegistrationToken, any>
+  
   private readonly registrationMap: RegistrationMap = new Map()
 
   public get registrations(): Registration[] {
     return Array.from(this.registrationMap.values())
   }
-
-  public readonly dependencies: Record<RegistrationToken, any>
 
   public push(...registrations: Registration[]) {
     for (const registration of registrations) {

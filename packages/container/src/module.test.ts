@@ -41,7 +41,6 @@ describe('Module', () => {
     }
   }
 
-
   describe('register', () => {
     const module = new Module()
     module.register('someClassService', SomeClassService)
@@ -61,18 +60,18 @@ describe('Module', () => {
 
     it('should throw error when registration key does not exist', () => {
       expect(() => {
-        module.resolve('invalidKey')
+        module.resolveToken('invalidKey')
       }).toThrow()
     })
     
     it('should correctly call resolved instances injected under resolved primary instance', () => {
-      const someClassService = module.resolve<GenericInterface>('someClassService')
+      const someClassService = module.resolveToken<GenericInterface>('someClassService')
       expect(someClassService.callSomeClassService()).toEqual('SomeClassService::callSomeClassService')
       expect(someClassService.callAnotherClassService()).toEqual('AnotherClassService::callAnotherClassService')
     })
   
     it('should correctly call resolved instances injected under resolved secondary instance', () => {
-      const anotherClassService = module.resolve<GenericInterface>('anotherClassService')
+      const anotherClassService = module.resolveToken<GenericInterface>('anotherClassService')
       expect(anotherClassService.callSomeClassService()).toEqual('SomeClassService::callSomeClassService')
       expect(anotherClassService.callAnotherClassService()).toEqual('AnotherClassService::callAnotherClassService')
     })
@@ -129,7 +128,7 @@ describe('Module', () => {
     // })
   })
 
-  describe('use', () => {
+  describe('useModule', () => {
     class SomeClass {
       private readonly anotherClass: AnotherClass
 
@@ -160,10 +159,10 @@ describe('Module', () => {
     const someModule = new Module()
     someModule.register('someClass', SomeClass)
 
-    someModule.use(anotherModule)
+    someModule.useModule(anotherModule)
 
     it('should pass', () => {
-      const someClass = someModule.resolve<SomeClass>('someClass')
+      const someClass = someModule.resolveToken<SomeClass>('someClass')
       expect(someClass.callSomeClass()).toEqual('SomeClass::callSomeClass')      
       expect(someClass.callAnotherClass()).toEqual('AnotherClass::callAnotherClass')      
     })
