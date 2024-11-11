@@ -1,7 +1,7 @@
 import * as Http from '@nodelith/http';
 import * as Types from '@nodelith/types';
 
-export class ControllerMethodMetadata {
+export class MethodMetadata {
 
   protected static readonly METADATA_KEY = Symbol()
 
@@ -16,12 +16,12 @@ export class ControllerMethodMetadata {
   public readonly description?: string | undefined;
 
   public static attach(
-    descriptor: TypedPropertyDescriptor<Types.Function & { [ControllerMethodMetadata.METADATA_KEY]?: ControllerMethodMetadata}>,
-    metadata: ControllerMethodMetadata,
+    descriptor: TypedPropertyDescriptor<Types.Function & { [MethodMetadata.METADATA_KEY]?: MethodMetadata}>,
+    metadata: MethodMetadata,
   ): PropertyDescriptor {
     if (descriptor.value) {
-      const currentMetadata = descriptor.value[ControllerMethodMetadata.METADATA_KEY]
-      descriptor.value[ControllerMethodMetadata.METADATA_KEY] = { ...currentMetadata,
+      const currentMetadata = descriptor.value[MethodMetadata.METADATA_KEY]
+      descriptor.value[MethodMetadata.METADATA_KEY] = { ...currentMetadata,
         key: metadata.key ?? currentMetadata?.key,
         name: metadata.name ?? currentMetadata?.name,
         path: metadata.path ?? currentMetadata?.path,
@@ -35,14 +35,14 @@ export class ControllerMethodMetadata {
 
   public static extract(
     descriptor: PropertyDescriptor
-  ): ControllerMethodMetadata {
-    if (descriptor.value && descriptor.value[ControllerMethodMetadata.METADATA_KEY]) {
+  ): MethodMetadata {
+    if (descriptor.value && descriptor.value[MethodMetadata.METADATA_KEY]) {
       return {
-        key: descriptor.value[ControllerMethodMetadata.METADATA_KEY]?.key,
-        name: descriptor.value[ControllerMethodMetadata.METADATA_KEY]?.name,
-        path: descriptor.value[ControllerMethodMetadata.METADATA_KEY]?.path,
-        method: descriptor.value[ControllerMethodMetadata.METADATA_KEY]?.method,
-        description: descriptor.value[ControllerMethodMetadata.METADATA_KEY]?.description,
+        key: descriptor.value[MethodMetadata.METADATA_KEY]?.key,
+        name: descriptor.value[MethodMetadata.METADATA_KEY]?.name,
+        path: descriptor.value[MethodMetadata.METADATA_KEY]?.path,
+        method: descriptor.value[MethodMetadata.METADATA_KEY]?.method,
+        description: descriptor.value[MethodMetadata.METADATA_KEY]?.description,
       };
     }
 

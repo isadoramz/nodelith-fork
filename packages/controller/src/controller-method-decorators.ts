@@ -1,10 +1,10 @@
 
-import { ControllerMethodMetadata } from './controller-method-metadata'
 import * as Http from '@nodelith/http';
+import * as Controller from './controller-method-metadata'
 
 export function Route(method: Http.Method, path?: string) {
   return (_: unknown, key: string, descriptor: PropertyDescriptor) => {
-    return ControllerMethodMetadata.attach(descriptor, { method, path, key });
+    return Controller.MethodMetadata.attach(descriptor, { method, path, key });
   };
 }
 

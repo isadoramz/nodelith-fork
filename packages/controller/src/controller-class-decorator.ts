@@ -3,7 +3,7 @@ import * as Controller from './controller-class-metadata';
 
 export function Path(path: string) {
   return (constructor: Types.Constructor): Types.Constructor => {
-    Controller.ControllerClassMetadata.attach(constructor, { path })
+    Controller.ClassMetadata.attach(constructor, { path })
     return constructor;
   };
 }
