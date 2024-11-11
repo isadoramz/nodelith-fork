@@ -5,7 +5,7 @@
   "author": "Thomaz Zandonotto <thomaz.zandonotto@gmail.com>",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
+  "type": "commonjs",
   "files": [
     "./dist"
   ],
