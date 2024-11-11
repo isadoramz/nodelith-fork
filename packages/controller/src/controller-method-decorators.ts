@@ -9,23 +9,23 @@ export function Route(method: Http.Method, path?: string) {
 }
 
 export function Get(path?: string) {
-  return Route('get', path ?? '/');
+  return Route(Http.Get, path ?? '/');
 }
 
 export function Delete(path?: string) {
-  return Route('delete', path ?? '/');
+  return Route(Http.Delete, path ?? '/');
 }
 
 export function Patch(path?: string) {
-  return Route('patch', path ?? '/');
+  return Route(Http.Patch, path ?? '/');
 }
 
 export function Put(path?: string) {
-  return Route('patch', path ?? '/');
+  return Route(Http.Put, path ?? '/');
 }
 
 export function Post(path?: string) {
-  return Route('post', path ?? '/');
+  return Route(Http.Post, path ?? '/');
 }
 
 // export function Name(name: string) {
