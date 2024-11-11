@@ -13,9 +13,21 @@ importers:
       '@nodelith/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@nodelith/container':
+        specifier: workspace:*
+        version: link:../../packages/container
+      '@nodelith/controller':
+        specifier: workspace:*
+        version: link:../../packages/controller
       '@nodelith/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@nodelith/express':
+        specifier: workspace:*
+        version: link:../../packages/express
+      '@nodelith/http':
+        specifier: workspace:*
+        version: link:../../packages/http
       '@nodelith/utilities':
         specifier: workspace:*
         version: link:../../packages/utilities
@@ -158,15 +170,24 @@ importers:
 
   packages/express:
     devDependencies:
+      '@nodelith/container':
+        specifier: workspace:*
+        version: link:../container
       '@nodelith/controller':
         specifier: workspace:*
         version: link:../controller
       '@nodelith/core':
         specifier: workspace:*
         version: link:../core
+      '@nodelith/http':
+        specifier: workspace:*
+        version: link:../http
       '@nodelith/types':
         specifier: workspace:*
         version: link:../types
+      '@nodelith/utilities':
+        specifier: workspace:*
+        version: link:../utilities
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -215,9 +236,6 @@ importers:
 
   packages/types:
     devDependencies:
-      '@nodelith/core':
-        specifier: workspace:*
-        version: link:../core
       '@types/jest':
         specifier: ^29.4.0
         version: 29.5.14

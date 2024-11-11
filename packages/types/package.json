@@ -26,7 +26,6 @@
     "build:watch": "rimraf ./dist/* && tsc --watch"
   },
   "devDependencies": {
-    "@nodelith/core": "workspace:*",
     "@types/jest": "^29.4.0",
     "@types/node": "^22.9.0",
     "jest": "^29.4.3",
