@@ -1,3 +1,3 @@
 import { Function } from './function'
 
-export type Factory<Return = unknown> = Function<Return>
+export type Factory<Return = any> = Function<Return>
