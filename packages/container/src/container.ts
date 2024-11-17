@@ -1,8 +1,8 @@
 import * as Injection from './index'
 
-export class Container<R extends Injection.Bundle = any> {
+export class Container<B extends Injection.Bundle = any> {
 
-  public readonly bundle: R
+  public readonly bundle: B
   
   private readonly map: Map<Injection.Token, Injection.Registration> = new Map()
 
@@ -37,11 +37,11 @@ export class Container<R extends Injection.Bundle = any> {
         }
 
         return new Proxy({} as any, {
-          set: (_target, token) => {
-            throw new Error(`Could not set dependency property "${token.toString()}". Dependency properties cannot be set through registration proxy.`)
+          set: (_target, property) => {
+            throw new Error(`Could not set dependency property "${property.toString()}". Dependency properties cannot be set through registration proxy.`)
           },
-          get: (_target, token) => {
-            return registration.getInstance()[token];
+          get: (_target, property) => {
+            return registration.instance[property];
           },
         })
       },
