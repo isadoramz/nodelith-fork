@@ -3,35 +3,50 @@ import * as Injection from './index'
 
 describe('Container', () => {
 
+  let defaultResolverWasCalled = false
+  let targetFactoryOneWasCalled = false
+  let targetFactoryTwoWasCalled = false
+  let targetFactoryDoubleWasCalled = false
+
+  beforeEach(() => {
+    defaultResolverWasCalled = false
+    targetFactoryOneWasCalled = false
+    targetFactoryTwoWasCalled = false
+    targetFactoryDoubleWasCalled = false
+  })
+
+  const defaultResolver: Injection.Resolver = (target, ...args) => {
+    defaultResolverWasCalled = true
+    return target(...args)
+  }
+
   const targetFactoryOne: Injection.Target = ({ targetTwo }) => {
     const call = () => 'targetOne::call'
     const callDependency = () => targetTwo.call()
+    targetFactoryOneWasCalled = true
     return { call, callDependency }
   }
 
   const targetFactoryTwo: Injection.Target = ({ targetOne }) => {
     const call = () => 'targetTwo::call'
     const callDependency = () => targetOne.call()
+    targetFactoryTwoWasCalled = true
     return { call, callDependency }
   }
 
   const targetFactoryDouble: Injection.Target = () => {
     const call = () => 'targetDouble::call'
+    targetFactoryDoubleWasCalled = true
     return { call }
   }
 
-  const defaultResolver: Injection.Resolver<string, Types.Factory> = (target, dependencies) => {
-    return target(dependencies)
-  }
-
-  describe('bundle', () => {
+  describe('registration', () => {
 
     const container = new Injection.Container()
   
-    const registrationOne = new Injection.Registration({
+    const registrationOne = new Injection.FactoryRegistration(targetFactoryOne, {
       token: 'targetOne',
       bundle: container.bundle,
-      target: targetFactoryOne,
       resolver: defaultResolver,
     })
 
@@ -49,7 +64,7 @@ describe('Container', () => {
       )
     })
     
-    it('Should throw error on attempt to set dependency properties through registration bundle', () => {
+    it('Should throw error on attempt to set properties through registration bundle values', () => {
       expect(() => container.bundle['targetOne']['key'] = 'value').toThrow(
         `Could not set dependency property "key". Dependency properties cannot be set through registration bundle.`
       )
@@ -60,17 +75,15 @@ describe('Container', () => {
     it('Should resolve acyclic dependency graph', () => {
       const container = new Injection.Container()
   
-      const registrationOne = new Injection.Registration({
+      const registrationOne = new Injection.FactoryRegistration(targetFactoryOne, {
         token: 'targetOne',
         bundle: container.bundle,
-        target: targetFactoryOne,
         resolver: defaultResolver,
       })
   
-      const registrationTwo = new Injection.Registration({
+      const registrationTwo = new Injection.FactoryRegistration(targetFactoryDouble, {
         token: 'targetTwo',
         bundle: container.bundle,
-        target: targetFactoryDouble,
         resolver: defaultResolver,
       })
   
@@ -93,17 +106,15 @@ describe('Container', () => {
     it('Should resolve cyclic dependency graph when dependency properties are not accessed during instance initialization', () => {
       const container = new Injection.Container()
   
-      const registrationOne = new Injection.Registration({
+      const registrationOne = new Injection.FactoryRegistration(targetFactoryOne, {
         token: 'targetOne',
         bundle: container.bundle,
-        target: targetFactoryOne,
         resolver: defaultResolver,
       })
   
-      const registrationTwo = new Injection.Registration({
+      const registrationTwo = new Injection.FactoryRegistration(targetFactoryTwo, {
         token: 'targetTwo',
         bundle: container.bundle,
-        target: targetFactoryTwo,
         resolver: defaultResolver,
       })
   
@@ -128,21 +139,19 @@ describe('Container', () => {
     it('Should resolve cyclic dependency graph when dependency properties are accessed in single direction', () => {
       const container = new Injection.Container()
   
-      const registrationOne = new Injection.Registration({
+      const registrationOne = new Injection.FactoryRegistration(targetFactoryOne, {
         token: 'targetOne',
         bundle: container.bundle,
-        target: targetFactoryOne,
         resolver: defaultResolver,
       })
   
-      const registrationTwo = new Injection.Registration({
+      const registrationTwo = new Injection.FactoryRegistration((dependencies) => {
+        const targetOneCallResultDuringResolution = dependencies.targetOne.call()
+        expect(targetOneCallResultDuringResolution).toBe('targetOne::call')
+        return targetFactoryTwo(dependencies)
+      }, {
         token: 'targetTwo',
         bundle: container.bundle,
-        target: (dependencies) => {
-          const targetOneCallResultDuringResolution = dependencies.targetOne.call()
-          expect(targetOneCallResultDuringResolution).toBe('targetOne::call')
-          return targetFactoryTwo(dependencies)
-        },
         resolver: defaultResolver,
       })
   
@@ -164,62 +173,44 @@ describe('Container', () => {
       expect(targetTwoCallDependencyResult).toBe('targetOne::call')
     })
   
-    it('Should resolve dependency targets only when dependency properties are accessed (lazy initialization)', () => {
-      let resolverWasCalled = false;
-      let targetFactoryOneWasCalled = false;
-      let targetFactoryTwoWasCalled = false;
-  
+    it('Should lazily resolve dependency targets only when dependency properties are accessed', () => {
       const container = new Injection.Container()
-      
-      const registration_1 = new Injection.Registration({
+
+      const registrationOne = new Injection.FactoryRegistration(targetFactoryOne, {
         token: 'targetOne',
         bundle: container.bundle,
-        target: (dependencies) => {
-          targetFactoryOneWasCalled = true
-          return targetFactoryOne(dependencies)
-        },          
-        resolver: (target, dependencies) => {
-          resolverWasCalled = true
-          return defaultResolver(target, dependencies)
-        },
+        resolver: defaultResolver,
       })
       
-      const registration_2 = new Injection.Registration({
+      const registrationTwo = new Injection.FactoryRegistration(targetFactoryTwo, {
         token: 'targetTwo',
         bundle: container.bundle,
-        target: (dependencies) => {
-          targetFactoryTwoWasCalled = true
-          return targetFactoryTwo(dependencies)
-        },
-        resolver: (target, dependencies) => {
-          resolverWasCalled = true
-          return defaultResolver(target, dependencies)
-        },
+        resolver: defaultResolver,
       })
   
       container.push(
-        registration_1,
-        registration_2,
+        registrationOne,
+        registrationTwo,
       )
   
-      expect(resolverWasCalled).toBe(false)
+      expect(defaultResolverWasCalled).toBe(false)
       expect(targetFactoryOneWasCalled).toBe(false)
       expect(targetFactoryTwoWasCalled).toBe(false)
   
       container.bundle.targetOne
       container.bundle.targetOne
   
-      expect(resolverWasCalled).toBe(false)
+      expect(defaultResolverWasCalled).toBe(false)
       expect(targetFactoryOneWasCalled).toBe(false)
       expect(targetFactoryTwoWasCalled).toBe(false)
   
       container.bundle.targetOne.call
-      expect(resolverWasCalled).toBe(true)
+      expect(defaultResolverWasCalled).toBe(true)
       expect(targetFactoryOneWasCalled).toBe(true)
       expect(targetFactoryTwoWasCalled).toBe(false)
       
       container.bundle.targetTwo.call
-      expect(resolverWasCalled).toBe(true)
+      expect(defaultResolverWasCalled).toBe(true)
       expect(targetFactoryOneWasCalled).toBe(true)
       expect(targetFactoryTwoWasCalled).toBe(true)
     })

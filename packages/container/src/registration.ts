@@ -1,101 +1,114 @@
+
 import * as Injection from './index'
+import * as Types from '@nodelith/types'
 
-// export type RegistrationProperties = {
-//   bundle: Injection.Bundle
-//   target: Injection.Target
-//   resolver: Injection.Resolver
-// }
-
-// export type RegistrationModifiers = {
-//   input?: Injection.InputModifier | undefined
-//   access?: Injection.AccessModifier | undefined
-//   lifetime?: Injection.LifetimeModifier | undefined
-// }
-
-// export type RegistrationParameters = 
-//   & RegistrationModifiers
-//   & RegistrationProperties
-
-export type RegistrationProperties = {
-  token: Injection.Token
-  bundle: Injection.Bundle
-  target: Injection.Target
-  resolver: Injection.Resolver
-  input?: Injection.InputModifier | undefined
-  access?: Injection.AccessModifier | undefined
-  lifetime?: Injection.LifetimeModifier | undefined
-}
-
-
-export class Registration<I = any> {
-
-  private static readonly DEFAULT_LIFETIME_STRATEGY: Injection.LifetimeModifier = 'transient'
+export abstract class Registration<InstanceType = any> {
+  public static readonly DEFAULT_LIFETIME: Injection.Lifetime = 'transient'
   
-  private static readonly DEFAULT_ACCESS_STRATEGY: Injection.AccessModifier = 'public'
+  public static readonly DEFAULT_ACCESS: Injection.Access = 'public'
   
-  private static readonly DEFAULT_INPUT_STRATEGY: Injection.InputModifier = 'spread'
+  public static readonly DEFAULT_MODE: Injection.Mode = 'spread'
 
-  public readonly lifetime: Injection.LifetimeModifier
+  private readonly resolver: Injection.Resolver<InstanceType>
   
-  public readonly access: Injection.AccessModifier
+  private singleton: InstanceType | undefined
   
-  public readonly input: Injection.InputModifier
+  private readonly bundle: Injection.Bundle
   
-  public readonly bundle: Injection.Bundle
+  public readonly target: Injection.Target
 
   public readonly token: Injection.Token
-  
-  public readonly target: Injection.Target<I>
-  
-  public readonly resolver: Injection.Resolver<I>
 
-  private instance: I | undefined
+  public readonly mode: Injection.Mode
 
-  public constructor(properties: RegistrationProperties) {
-    this.token = properties.token,
-    this.bundle = properties.bundle
-    this.target = properties.target
-    this.resolver = properties.resolver
-    this.input = properties.input ?? Registration.DEFAULT_INPUT_STRATEGY
-    this.access = properties.access ?? Registration.DEFAULT_ACCESS_STRATEGY
-    this.lifetime = properties.lifetime ?? Registration.DEFAULT_LIFETIME_STRATEGY
+  public readonly access: Injection.Access
+
+  public readonly lifetime: Injection.Lifetime
+
+  public constructor(target: Injection.Target, options: {
+    resolver: Injection.Resolver<InstanceType>
+    access?: Injection.Access,
+    bundle?: Injection.Bundle
+    lifetime?: Injection.Lifetime,
+    mode?: Injection.Mode
+    token?: Injection.Token
+  }) {
+    this.resolver = options.resolver
+    this.target = target
+    this.bundle = options.bundle ?? {}
+    this.token = options?.token ?? Symbol()
+    this.mode = options?.mode ?? Registration.DEFAULT_MODE
+    this.access = options?.access ?? Registration.DEFAULT_ACCESS
+    this.lifetime = options?.lifetime ?? Registration.DEFAULT_LIFETIME
   }
 
-  public getInstance(): I {
-    if(this.instance) {
-      return this.instance
+  get instance() {
+    if(this.singleton) {
+      return this.singleton
+    }
+
+    if(this.lifetime === 'singleton') {
+      return this.singleton = this.resolve()
     }
 
     return this.resolve()
   }
 
-  public get isTransient() {
-    return this.lifetime === 'transient'
+  private resolve() {
+    const args = [this.bundle]
+    return this.resolver(this.target, ...args)
+  }
+}
+
+export class ConstructorRegistration<InstanceType> extends Registration<InstanceType> {
+  public static resolver<InstanceType = any >(constructor: Types.Constructor<InstanceType>, ...args: any[]) {
+    return new constructor(...args)
   }
 
-  public get isSingleton() {
-    return this.lifetime === 'singleton'
+  public constructor(constructor: Injection.TargetConstructor, options?: {
+    resolver?: typeof ConstructorRegistration.resolver
+    bundle?: Injection.Bundle
+    token?: Injection.Token
+    mode?: Injection.Mode
+    access?: Injection.Access,
+    lifetime?: Injection.Lifetime,
+  }) {
+    super(constructor, { resolver: ConstructorRegistration.resolver, 
+      ...options
+    })
+  }
+}
+
+export class FactoryRegistration<InstanceType> extends Registration<InstanceType> {
+  public static resolver<InstanceType = any >(factory: Types.Factory<InstanceType>, ...args: any[]) {
+    return factory(...args)
   }
 
-  public get isPublic() {
-    return this.access === 'public'
+  public constructor(factory: Injection.TargetFactory, options?: {
+    resolver?: typeof FactoryRegistration.resolver
+    bundle?: Injection.Bundle
+    token?: Injection.Token
+    mode?: Injection.Mode
+    access?: Injection.Access,
+    lifetime?: Injection.Lifetime,
+  }) {
+    super(factory, { resolver: FactoryRegistration.resolver, 
+      ...options
+    })
+  }
+}
+
+export class ValueRegistration<InstanceType> extends Registration<InstanceType> {
+  public static resolver<InstanceType = any>(value: Injection.TargetValue<InstanceType>) {
+    return value
   }
 
-  public get isPrivate() {
-    return this.access === 'private'
-  }
-  
-  private resolve(): I | never {
-    const resolvedInstance = this.resolver(this.target, this.bundle)
-
-    if(!resolvedInstance) {
-      throw new Error(`Could not resolve dependency. Resolver returned undefined.`)
-    }
-
-    if(this.isSingleton) {
-      return this.instance = resolvedInstance
-    }
-
-    return resolvedInstance
+  public constructor(value: Injection.TargetValue, options?: {
+    bundle?: Injection.Bundle
+    token?: Injection.Token
+  }) {
+    super(value, { resolver: ValueRegistration.resolver, 
+      ...options
+    })
   }
 }

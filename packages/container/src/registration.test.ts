@@ -9,151 +9,79 @@ describe('Registration', () => {
     dependency: 'someDependency' 
   }
 
-  const target: Injection.Target<{ dependency: string }> = ({ dependency }) => {
-    return { dependency }
-  }
-
-  const resolver: Injection.Resolver<string, Types.Factory> = (target, dependencies) => {
-    return target(dependencies)
-  }
-
-  describe('isTransient', () => {
-    it('Should return true when registration is intentionally declared transient', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, lifetime: 'transient'})
-      expect(registration.isTransient).toBe(true)
-    })
-
-    it('Should return false when registration is intentionally declared singleton', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, lifetime: 'singleton'})
-      expect(registration.isTransient).toBe(false)
-    })
-
-    it('Should return true when registration options do not contain lifecycle property', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token })
-      expect(registration.isTransient).toBe(true)
-    })
-  })
-
-  describe('isSingleton', () => {
-    it('Should return true when registration is intentionally declared singleton', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, lifetime: 'singleton'})
-      expect(registration.isSingleton).toBe(true)
-    })
-
-    it('Should return false when registration is intentionally declared transient', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, lifetime: 'transient'})
-      expect(registration.isSingleton).toBe(false)
-    })
-
-    it('Should return false when registration options do not contain lifecycle property', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token })
-      expect(registration.isSingleton).toBe(false)
-    })
-  })
-
-  describe('isPublic', () => {
-    it('Should return true when registration is intentionally declared public', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, access: 'public'})
-      expect(registration.isPublic).toBe(true)
-    })
-
-    it('Should return false when registration is intentionally declared private', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, access: 'private'})
-      expect(registration.isPublic).toBe(false)
-    })
-
-    it('Should return true when registration options do not contain access property', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token })
-      expect(registration.isPublic).toBe(true)
-    })
-  })
-
-  describe('isPrivate', () => {
-    it('Should return true when registration is intentionally declared private', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, access: 'private'})
-      expect(registration.isPrivate).toBe(true)
-    })
-
-    it('Should return false when registration is intentionally declared public', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token, access: 'public'})
-      expect(registration.isPrivate).toBe(false)
-    })
-
-    it('Should return false when registration options do not contain access property', () => {
-      const registration = new Injection.Registration({ target, resolver, bundle, token })
-      expect(registration.isPrivate).toBe(false)
-    })
-  })
-
-  describe('getInstance', () => {
-    it('Should resolve registration only when getInstance is called', () => {
-      let resolverWasCalled = false
+  describe('FactoryRegistration', () => {
+    it('Should resolve registration only when instance is accessed', () => {
       let targetWasCalled = false
 
       const target: Injection.Target<string> = () => {
         targetWasCalled = true
-        return 'not_undefined'
-      }
-    
-      const resolver: Injection.Resolver<string, Types.Factory> = (target) => {
-        resolverWasCalled = true
-        return target()
       }
 
-      const registration = new Injection.Registration({
-        resolver,
-        target,
-        bundle,
-        token,
-      })
-
+      const registration = new Injection.FactoryRegistration(target, { token, bundle })
       expect(targetWasCalled).toBe(false)
-      expect(resolverWasCalled).toBe(false)
-  
-      registration.getInstance()
-    
+
+      registration.instance
       expect(targetWasCalled).toBe(true)
-      expect(resolverWasCalled).toBe(true)
     })
 
-    it('Should resolve to the same instance the getInstance method is called over singleton registration', () => {
-      const registration = new Injection.Registration({
-        lifetime: 'singleton',
-        resolver,
-        target,
-        bundle,
-        token,
-      })
+    it('Should resolve to the same instance when registration is singleton', () => {
+      const factory: Injection.TargetFactory = () => {
+        return { value: 'resolved_value' }
+      }
   
-      const instance_1 = registration.getInstance()
-      const instance_2 = registration.getInstance()
+      const registration = new Injection.FactoryRegistration(factory, { token, bundle, lifetime: 'singleton' })
+      const instance_1 = registration.instance
+      const instance_2 = registration.instance
+
       expect(instance_1).toBe(instance_2)
     })
 
-    it('Should resolve to a different instance when getInstance method is called over transient registration', () => {
-      const registration = new Injection.Registration({
-        lifetime: 'transient',
-        resolver,
-        target,
-        bundle,
-        token,
-      })
+    it('Should resolve to a different instance when registration is transient', () => {
+      const factory: Injection.TargetFactory = () => {
+        return { value: 'resolved_value' }
+      }
+  
+      const registration = new Injection.FactoryRegistration(factory, { token, bundle, lifetime: 'transient',})
+      const instance_1 = registration.instance
+      const instance_2 = registration.instance
 
-      const instance_1 = registration.getInstance()
-      const instance_2 = registration.getInstance()
       expect(instance_1).not.toBe(instance_2)
     })
+  })
+
+  describe('ConstructorRegistration', () => {
+    it('Should resolve registration only when instance is accessed', () => {
+      let targetWasCalled = false
+
+      class Constructor { constructor() { 
+        targetWasCalled = true
+      }}
+
+      const registration = new Injection.ConstructorRegistration(Constructor, { token, bundle })
+      expect(targetWasCalled).toBe(false)
+
+      registration.instance
+      expect(targetWasCalled).toBe(true)
+    })
+
+    it('Should resolve to the same instance when registration is singleton', () => {
+      class Constructor {}
   
-    it('Should throw error when registration resolver returns undefined', () => {
-      const registration = new Injection.Registration({
-        token,
-        target,
-        bundle,
-        resolver: () => undefined,
-      })
-      expect(() => registration.getInstance()).toThrow(
-        `Could not resolve dependency "${token}". Resolver returned undefined.`
-      )
+      const registration = new Injection.ConstructorRegistration(Constructor, { token, bundle, lifetime: 'singleton' })
+      const instance_1 = registration.instance
+      const instance_2 = registration.instance
+
+      expect(instance_1).toBe(instance_2)
+    })
+
+    it('Should resolve to a different instance when registration is transient', () => {
+      class Constructor {}
+  
+      const registration = new Injection.ConstructorRegistration(Constructor, { token, bundle, lifetime: 'transient',})
+      const instance_1 = registration.instance
+      const instance_2 = registration.instance
+
+      expect(instance_1).not.toBe(instance_2)
     })
   })
 })

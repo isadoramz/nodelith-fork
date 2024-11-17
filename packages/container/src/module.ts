@@ -4,11 +4,11 @@ import * as Injection from './index'
 
 export class Module {
 
-  private readonly inputStrategy?: Injection.InputModifier
+  private readonly mode?: Injection.Mode
   
-  private readonly accessStrategy?: Injection.AccessModifier
+  private readonly access?: Injection.Access
   
-  private readonly lifetimeStrategy?: Injection.LifetimeModifier
+  private readonly lifetime?: Injection.Lifetime
 
   private readonly initializers: Array<Injection.Token> = []
   
@@ -16,19 +16,17 @@ export class Module {
 
   public get registrations() {
     return this.container.registrations.filter((registration) => {
-      return registration.isPublic
+      return registration.access === 'public'
     })
   }
 
   public registerValue(token: Injection.Token, value: any): void {
-    if(!this.container.has(token)) {
-      throw new Error(`Could not complete registration. Module already contain a registration for "${token.toString()}" token.`)
+    if(this.container.has(token)) {
+      throw new Error(`Could not complete value registration. Module already contain a registration for "${token.toString()}" token.`)
     }
 
-    const registration = new Injection.Registration({
-      resolver: Injection.Registration.valueResolver,
+    const registration = new Injection.ValueRegistration(value, {
       bundle: this.container.bundle,
-      target: value,
       token,
     })
 
@@ -36,14 +34,12 @@ export class Module {
   }
 
   public registerFactory(token: Injection.Token, factory: Injection.TargetFactory): void {
-    if(!this.container.has(token)) {
-      throw new Error(`Could not complete registration. Module already contain a registration for "${token.toString()}" token.`)
+    if(this.container.has(token)) {
+      throw new Error(`Could not complete factory registration. Module already contain a registration for "${token.toString()}" token.`)
     }
 
-    const registration = new Injection.Registration({
-      resolver: Module.factoryResolver,
+    const registration = new Injection.FactoryRegistration(factory, {
       bundle: this.container.bundle,
-      target: factory,
       token,
     })
 
@@ -51,25 +47,35 @@ export class Module {
   }
 
   public registerConstructor(token: Injection.Token, constructor: Injection.TargetConstructor): void {
-    if(!this.container.has(token)) {
-      throw new Error(`Could not complete registration. Module already contain a registration for "${token.toString()}" token.`)
+    if(this.container.has(token)) {
+      throw new Error(`Could not complete constructor registration. Module already contain a registration for "${token.toString()}" token.`)
     }
 
-    const registration = new Injection.Registration({
-      resolver: Module.constructorResolver,
+    const registration = new Injection.ConstructorRegistration(constructor, {
       bundle: this.container.bundle,
-      target: constructor,
       token,
     })
 
     this.container.push(registration)
   }
 
-  public resolveFactory<I>(factory: Types.Factory): I {
-    throw new Error('Not Implemented')
+  public resolveToken<I>(token: Injection.Token): I {
+    return this.container.bundle[token]
   }
 
-  public resolveConstructor<I>(constructor: Types.Constructor<I>): I {
-    throw new Error('Not Implemented')
+  public resolveFactory<I = any, F extends Types.Factory<I> = Types.Factory<I>>(factory: F): I {
+    const { instance } = new Injection.FactoryRegistration<I>(factory, {
+      bundle: this.container
+    })
+
+    return instance
+  }
+
+  public resolveConstructor<I = any, C extends Types.Constructor<I> = Types.Constructor<I>>(constructor: C): I {
+    const { instance } = new Injection.ConstructorRegistration<I>(constructor, {
+      bundle: this.container
+    })
+
+    return instance
   }
 }

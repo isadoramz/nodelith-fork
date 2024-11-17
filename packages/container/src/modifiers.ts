@@ -1,5 +1,5 @@
-export type InputModifier = 'spread' | 'bundled'
+export type Mode = 'spread' | 'bundle'
 
-export type AccessModifier = 'public' | 'private'
+export type Access = 'public' | 'private'
 
-export type LifetimeModifier = 'transient' | 'singleton'
+export type Lifetime = 'transient' | 'singleton'
