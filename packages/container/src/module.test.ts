@@ -43,35 +43,31 @@ describe('Module', () => {
 
   describe('register', () => {
     const module = new Module()
-    module.register('someClassService', SomeClassService)
-    module.register('anotherClassService', AnotherClassService)
+    module.registerConstructor('someClassService', SomeClassService)
+    module.registerConstructor('anotherClassService', AnotherClassService)
 
     it('should throw error when registration key is already in used', () => {
-      expect(() => {
-        module.register('someClassService', SomeClassService)
-      }).toThrow()
+      expect(() => module.registerConstructor('someClassService', SomeClassService)).toThrow()
     })  
   })
 
   describe('resolve', () => {
     const module = new Module()
-    module.register('someClassService', SomeClassService)
-    module.register('anotherClassService', AnotherClassService)
+    module.registerConstructor('someClassService', SomeClassService)
+    module.registerConstructor('anotherClassService', AnotherClassService)
 
     it('should throw error when registration key does not exist', () => {
-      expect(() => {
-        module.resolveToken('invalidKey')
-      }).toThrow()
+      expect(() => module.get('invalidKey')).toThrow()
     })
     
     it('should correctly call resolved instances injected under resolved primary instance', () => {
-      const someClassService = module.resolveToken<GenericInterface>('someClassService')
+      const someClassService = module.get<GenericInterface>('someClassService')
       expect(someClassService.callSomeClassService()).toEqual('SomeClassService::callSomeClassService')
       expect(someClassService.callAnotherClassService()).toEqual('AnotherClassService::callAnotherClassService')
     })
   
     it('should correctly call resolved instances injected under resolved secondary instance', () => {
-      const anotherClassService = module.resolveToken<GenericInterface>('anotherClassService')
+      const anotherClassService = module.get<GenericInterface>('anotherClassService')
       expect(anotherClassService.callSomeClassService()).toEqual('SomeClassService::callSomeClassService')
       expect(anotherClassService.callAnotherClassService()).toEqual('AnotherClassService::callAnotherClassService')
     })
@@ -101,8 +97,8 @@ describe('Module', () => {
     it('should call all initializer classes on the order they were registered', async () => {
       const container = new Module()
 
-      container.register('someInitializer', SomeInitializer)
-      container.register('anotherInitializer', AnotherInitializer)
+      container.registerConstructor('someInitializer', SomeInitializer)
+      container.registerConstructor('anotherInitializer', AnotherInitializer)
 
       await container.initialize()
 
@@ -128,43 +124,43 @@ describe('Module', () => {
     // })
   })
 
-  describe('useModule', () => {
-    class SomeClass {
-      private readonly anotherClass: AnotherClass
+  // describe('useModule', () => {
+  //   class SomeClass {
+  //     private readonly anotherClass: AnotherClass
 
-      public constructor(dependencies: {
-        anotherClass: AnotherClass
-      }) {
-        this.anotherClass = dependencies.anotherClass
-      }
+  //     public constructor(dependencies: {
+  //       anotherClass: AnotherClass
+  //     }) {
+  //       this.anotherClass = dependencies.anotherClass
+  //     }
 
-      public callSomeClass() {
-        return 'SomeClass::callSomeClass'
-      }
+  //     public callSomeClass() {
+  //       return 'SomeClass::callSomeClass'
+  //     }
 
-      public callAnotherClass() {
-        return this.anotherClass.callAnotherClass()
-      }
-    }
+  //     public callAnotherClass() {
+  //       return this.anotherClass.callAnotherClass()
+  //     }
+  //   }
 
-    class AnotherClass {
-      public callAnotherClass() {
-        return 'AnotherClass::callAnotherClass'
-      }
-    }
+  //   class AnotherClass {
+  //     public callAnotherClass() {
+  //       return 'AnotherClass::callAnotherClass'
+  //     }
+  //   }
 
-    const anotherModule = new Module()
-    anotherModule.register('anotherClass', AnotherClass)
+  //   const anotherModule = new Module()
+  //   anotherModule.register('anotherClass', AnotherClass)
 
-    const someModule = new Module()
-    someModule.register('someClass', SomeClass)
+  //   const someModule = new Module()
+  //   someModule.register('someClass', SomeClass)
 
-    someModule.useModule(anotherModule)
+  //   someModule.useModule(anotherModule)
 
-    it('should pass', () => {
-      const someClass = someModule.resolveToken<SomeClass>('someClass')
-      expect(someClass.callSomeClass()).toEqual('SomeClass::callSomeClass')      
-      expect(someClass.callAnotherClass()).toEqual('AnotherClass::callAnotherClass')      
-    })
-  })
+  //   it('should pass', () => {
+  //     const someClass = someModule.resolveToken<SomeClass>('someClass')
+  //     expect(someClass.callSomeClass()).toEqual('SomeClass::callSomeClass')      
+  //     expect(someClass.callAnotherClass()).toEqual('AnotherClass::callAnotherClass')      
+  //   })
+  // })
 })

@@ -1,31 +1,31 @@
-import { RegistrationToken, RegistrationMap, Registration } from './registration'
+import * as Injection from './index'
 
-export class Container {
+export class Container<R extends Injection.Bundle = any> {
 
-  public readonly dependencies: Record<RegistrationToken, any>
+  public readonly bundle: R
   
-  private readonly registrationMap: RegistrationMap = new Map()
+  private readonly map: Map<Injection.Token, Injection.Registration> = new Map()
 
-  public get registrations(): Registration[] {
-    return Array.from(this.registrationMap.values())
+  public get registrations(): Injection.Registration[] {
+    return Array.from(this.map.values())
   }
 
-  public push(...registrations: Registration[]) {
+  public push(...registrations: Injection.Registration[]) {
     for (const registration of registrations) {
-      this.registrationMap.set(registration.token, registration)
+      this.map.set(registration.token, registration)
     }
   }
 
-  public has(token: RegistrationToken): boolean {
-    return this.registrationMap.has(token)
+  public has(token: Injection.Token): boolean {
+    return this.map.has(token)
   }
 
   public constructor() {
-    this.dependencies = new Proxy(this.registrationMap as any, {
-      set(_map: RegistrationMap, token: RegistrationToken) {
+    this.bundle = new Proxy(this.map as any, {
+      set(_map: Map<Injection.Token, Injection.Registration>, token: Injection.Token) {
         throw new Error(`Could not set registration "${token.toString()}". Registration should not be done through proxy.`)
       },
-      get(map: RegistrationMap, token: RegistrationToken, mapProxy: RegistrationMap) {
+      get(map: Map<Injection.Token, Injection.Registration>, token: Injection.Token, _mapProxy: Map<Injection.Token, Injection.Registration>) {
         if(!map.has(token)) {
           throw new Error(`Could not resolve dependency "${token.toString()}". Invalid registration token.`)
         }
@@ -38,10 +38,10 @@ export class Container {
 
         return new Proxy({} as any, {
           set: (_target, token) => {
-            throw new Error(`Could not set dependency property "${token.toString()}". Dependency properties cannot be set through registration instance.`)
+            throw new Error(`Could not set dependency property "${token.toString()}". Dependency properties cannot be set through registration proxy.`)
           },
           get: (_target, token) => {
-            return registration.instance[token];
+            return registration.getInstance()[token];
           },
         })
       },

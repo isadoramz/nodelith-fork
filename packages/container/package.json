@@ -23,7 +23,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "jest --passWithNoTests --config ./jest.json",
+    "test": "jest --passWithNoTests --config ./jest.json --verbose",
     "build": "rimraf ./dist/* && tsc",
     "build:watch": "rimraf ./dist/* && tsc --watch"
   },

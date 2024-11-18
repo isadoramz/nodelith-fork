@@ -1,55 +1,80 @@
-import * as Types from '@nodelith/types'
+import * as Injection from './index'
 
-export type ContainerSymbol = Symbol
+// export type RegistrationProperties = {
+//   bundle: Injection.Bundle
+//   target: Injection.Target
+//   resolver: Injection.Resolver
+// }
 
-export type RegistrationToken = string | symbol | number
+// export type RegistrationModifiers = {
+//   input?: Injection.InputModifier | undefined
+//   access?: Injection.AccessModifier | undefined
+//   lifetime?: Injection.LifetimeModifier | undefined
+// }
 
-export type RegistrationMap = Map<RegistrationToken, Registration>
+// export type RegistrationParameters = 
+//   & RegistrationModifiers
+//   & RegistrationProperties
 
-export type RegistrationAccess = 'public' | 'private'
-
-export type RegistrationDependencies = Record<RegistrationToken, any>
-
-export type RegistrationTarget<InstanceType = any> = Types.Constructor<InstanceType>
-
-export type RegistrationResolver<InstanceType = any> = (target: RegistrationTarget, dependencies: RegistrationDependencies) => InstanceType
-
-export type RegistrationOptions = {
-  dependencies: Record<RegistrationToken, any>
-  access?: RegistrationAccess
-  token: RegistrationToken
-  target?: RegistrationTarget
-  resolver?: RegistrationResolver
+export type RegistrationProperties = {
+  token: Injection.Token
+  bundle: Injection.Bundle
+  target: Injection.Target
+  resolver: Injection.Resolver
+  input?: Injection.InputModifier | undefined
+  access?: Injection.AccessModifier | undefined
+  lifetime?: Injection.LifetimeModifier | undefined
 }
+
 
 export class Registration<I = any> {
 
-  public readonly dependencies: RegistrationDependencies
+  private static readonly DEFAULT_LIFETIME_STRATEGY: Injection.LifetimeModifier = 'transient'
   
-  public readonly access: RegistrationAccess
+  private static readonly DEFAULT_ACCESS_STRATEGY: Injection.AccessModifier = 'public'
   
-  public readonly token: RegistrationToken
-  
-  public readonly target: RegistrationTarget<I> | undefined
-  
-  public readonly resolver: RegistrationResolver<I> | undefined
+  private static readonly DEFAULT_INPUT_STRATEGY: Injection.InputModifier = 'spread'
 
-  public constructor(options: RegistrationOptions) {
-    this.dependencies = options.dependencies
-    this.access = options.access ?? 'public'
-    this.token = options.token
-    this.target = options.target
-    this.resolver = options.resolver
+  public readonly lifetime: Injection.LifetimeModifier
+  
+  public readonly access: Injection.AccessModifier
+  
+  public readonly input: Injection.InputModifier
+  
+  public readonly bundle: Injection.Bundle
+
+  public readonly token: Injection.Token
+  
+  public readonly target: Injection.Target<I>
+  
+  public readonly resolver: Injection.Resolver<I>
+
+  private instance: I | undefined
+
+  public constructor(properties: RegistrationProperties) {
+    this.token = properties.token,
+    this.bundle = properties.bundle
+    this.target = properties.target
+    this.resolver = properties.resolver
+    this.input = properties.input ?? Registration.DEFAULT_INPUT_STRATEGY
+    this.access = properties.access ?? Registration.DEFAULT_ACCESS_STRATEGY
+    this.lifetime = properties.lifetime ?? Registration.DEFAULT_LIFETIME_STRATEGY
   }
-  
-  private _instance: I | undefined
 
-  public get instance(): I {
-    if(this._instance) {
-      return this._instance
+  public getInstance(): I {
+    if(this.instance) {
+      return this.instance
     }
 
     return this.resolve()
+  }
+
+  public get isTransient() {
+    return this.lifetime === 'transient'
+  }
+
+  public get isSingleton() {
+    return this.lifetime === 'singleton'
   }
 
   public get isPublic() {
@@ -61,20 +86,16 @@ export class Registration<I = any> {
   }
   
   private resolve(): I | never {
-    if(!this.target) {
-      throw new Error(`Could not resolve dependency "${this.token.toString()}". Missing registration target.`)
+    const resolvedInstance = this.resolver(this.target, this.bundle)
+
+    if(!resolvedInstance) {
+      throw new Error(`Could not resolve dependency. Resolver returned undefined.`)
     }
 
-    if(!this.resolver) {
-      throw new Error(`Could not resolve dependency "${this.token.toString()}". Missing registration resolver.`)
+    if(this.isSingleton) {
+      return this.instance = resolvedInstance
     }
 
-    const resolution = this.resolver(this.target, this.dependencies)
-
-    if(!resolution) {
-      throw new Error(`Could not resolve dependency "${this.token.toString()}". Resolver returned undefined.`)
-    }
-
-    return this._instance = resolution
+    return resolvedInstance
   }
 }
