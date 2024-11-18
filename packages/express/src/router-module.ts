@@ -33,7 +33,6 @@ export class RouterModule extends Container.Module {
     return controllers.reduce((wrapperRouter, constructor) => {
       const classMetadata = Controller.ClassMetadata.extract(constructor)
 
-
       if(classMetadata.path) {
         wrapperRouter.use(classMetadata.path, this.resolveControllerRouter(constructor))
       }

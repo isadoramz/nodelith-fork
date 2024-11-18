@@ -7,6 +7,7 @@ export class ServerModule extends Express.RouterModule {
     await super.initialize()
   
     this.resolveApplication().listen(3003, () => {
+      console.log('Application running on port 3003')
     })
   }
   
