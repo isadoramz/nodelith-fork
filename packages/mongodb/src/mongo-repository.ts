@@ -103,7 +103,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
   
       const timestamps = {
         createdAt: currentDate,
-        upadtedAt: currentDate,
+        updatedAt: currentDate,
       } as const
   
       const { insertedId } = await this.collection.insertOne({
@@ -126,7 +126,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
   
       const timestamps = {
         createdAt: currentDate,
-        upadtedAt: currentDate,
+        updatedAt: currentDate,
       } as const
 
       const timestampedProperties = properties.map((entityProperties) => ({
