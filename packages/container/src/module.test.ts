@@ -1,171 +1,186 @@
-import * as Core from '@nodelith/core'
 import { Module } from './module'
-
-// import * as Injection from '@nodelith/injection'
-
 
 describe('Module', () => {
   interface GenericInterface {
-    callSomeClassService(): string
-    callAnotherClassService(): string
+    call(): string
   }
 
-  class SomeClassService implements GenericInterface {
-    private readonly anotherClassService: GenericInterface
+  class SomeClass implements GenericInterface {
+    private readonly anotherClassInstance: GenericInterface
   
-    public constructor(dependencies: {
-      anotherClassService: GenericInterface,
+    public constructor(bundle: {
+      anotherClassInstance: GenericInterface,
     }) {
-      this.anotherClassService = dependencies.anotherClassService
+      this.anotherClassInstance = bundle.anotherClassInstance
     }
 
-    public callSomeClassService() {
-      return 'SomeClassService::callSomeClassService'
+    public call() {
+      return 'SomeClass::call'
     }
-    public callAnotherClassService() {
-      return this.anotherClassService.callAnotherClassService()
+    public callAnother() {
+      return this.anotherClassInstance.call()
     }
   }
 
-  class AnotherClassService implements GenericInterface {
-    private readonly someClassService: GenericInterface
+  class AnotherClass implements GenericInterface {
+    private readonly someClassInstance: GenericInterface
   
-    public constructor(dependencies: {
-      someClassService: GenericInterface,
+    public constructor(bundle: {
+      someClassInstance: GenericInterface,
     }) {
-      this.someClassService = dependencies.someClassService
+      this.someClassInstance = bundle.someClassInstance
     }
 
-    public callSomeClassService() {
-      return this.someClassService.callSomeClassService()
+    public call() {
+      return 'AnotherClass::call'
     }
-    public callAnotherClassService() {
-      return 'AnotherClassService::callAnotherClassService'
+    public callSome() {
+      return this.someClassInstance.call()
+    }
+  }
+
+  const someFactory = (bundle: {
+    anotherFactoryInstance: ReturnType<typeof anotherFactory>
+  }) => {
+    return {
+      call() { return 'someFactory::call' },
+      callAnother() { return bundle.anotherFactoryInstance.call() },
+    }
+  }
+
+  const anotherFactory = (bundle: {
+    someFactoryInstance: ReturnType<typeof someFactory>
+  }) => {
+    return {
+      call() { return 'anotherFactory::call' },
+      callSome() { return bundle.someFactoryInstance.call() },
     }
   }
 
   describe('register', () => {
     const module = new Module()
-    module.registerConstructor('someClassService', SomeClassService)
-    module.registerConstructor('anotherClassService', AnotherClassService)
+    module.registerConstructor('someClassInstance', SomeClass)
+    module.registerConstructor('anotherClassInstance', AnotherClass)
 
     it('Should throw error when registration key is already in used', () => {
-      expect(() => module.registerConstructor('someClassService', SomeClassService)).toThrow()
+      expect(() => module.registerConstructor('someClassInstance', SomeClass)).toThrow()
     })  
   })
 
-  describe('resolve', () => {
-    const module = new Module()
-    module.registerConstructor('someClassService', SomeClassService)
-    module.registerConstructor('anotherClassService', AnotherClassService)
+  describe('resolveToken', () => {
+    it('Should throw error when registration key does not exist', () => {
+      const module = new Module()
 
-    it('should throw error when registration key does not exist', () => {
+      module.registerConstructor('someClassInstance', SomeClass)
+      module.registerConstructor('anotherClassInstance', AnotherClass)
+
       expect(() => module.resolveToken('invalidKey')).toThrow()
     })
     
-    it('should correctly call resolved instances injected under resolved primary instance', () => {
-      const someClassService = module.resolveToken<GenericInterface>('someClassService')
-      expect(someClassService.callSomeClassService()).toEqual('SomeClassService::callSomeClassService')
-      expect(someClassService.callAnotherClassService()).toEqual('AnotherClassService::callAnotherClassService')
+    it('Should correctly call resolved class instances injected under resolved primary instance', () => {
+      const module = new Module()
+
+      module.registerConstructor('someClassInstance', SomeClass)
+      module.registerConstructor('anotherClassInstance', AnotherClass)
+
+      const someClassInstance = module.resolveToken<SomeClass>('someClassInstance')
+
+      expect(someClassInstance.call()).toEqual('SomeClass::call')
+      expect(someClassInstance.callAnother()).toEqual('AnotherClass::call')
     })
   
-    it('should correctly call resolved instances injected under resolved secondary instance', () => {
-      const anotherClassService = module.resolveToken<GenericInterface>('anotherClassService')
-      expect(anotherClassService.callSomeClassService()).toEqual('SomeClassService::callSomeClassService')
-      expect(anotherClassService.callAnotherClassService()).toEqual('AnotherClassService::callAnotherClassService')
+    it('Should correctly call resolved class instances injected under resolved secondary instance', () => {
+      const module = new Module()
+
+      module.registerConstructor('someClassInstance', SomeClass)
+      module.registerConstructor('anotherClassInstance', AnotherClass)
+
+      const anotherClassInstance = module.resolveToken<AnotherClass>('anotherClassInstance')
+
+      expect(anotherClassInstance.call()).toEqual('AnotherClass::call')
+      expect(anotherClassInstance.callSome()).toEqual('SomeClass::call')
+    })
+
+    it('Should correctly call resolved factory instances injected under resolved primary instance', () => {
+      const module = new Module()
+
+      module.registerFactory('someFactoryInstance', someFactory)
+      module.registerFactory('anotherFactoryInstance', anotherFactory)
+
+      const someFactoryInstance = module.resolveToken<ReturnType<typeof someFactory>>('someFactoryInstance')
+
+      expect(someFactoryInstance.call()).toEqual('someFactory::call')
+      expect(someFactoryInstance.callAnother()).toEqual('anotherFactory::call')
+    })
+  
+    it('Should correctly call resolved factory instances injected under resolved secondary instance', () => {
+      const module = new Module()
+
+      module.registerFactory('someFactoryInstance', someFactory)
+      module.registerFactory('anotherFactoryInstance', anotherFactory)
+
+      const anotherFactoryInstance = module.resolveToken<ReturnType<typeof someFactory>>('anotherFactoryInstance')
+
+      expect(anotherFactoryInstance.call()).toEqual('anotherFactory::call')
+      expect(anotherFactoryInstance.callSome()).toEqual('someFactory::call')
+    })
+  })
+
+  describe('resolveFactory', () => {
+    const stubFactory = (bundle: {
+      someFactoryInstance: ReturnType<typeof someFactory>,
+      anotherFactoryInstance: ReturnType<typeof anotherFactory>
+    }) => {
+      return {
+        callSome() { return bundle.someFactoryInstance.call() },
+        callAnother() { return bundle.anotherFactoryInstance.call() },
+      }
+    }
+
+    it('should resolve factory', () => {
+      const module = new Module()
+  
+      module.registerFactory('someFactoryInstance', someFactory)
+      module.registerFactory('anotherFactoryInstance', anotherFactory)
+  
+      const stub = module.resolveFactory(stubFactory)
+  
+      expect(stub.callSome()).toBe('someFactory::call')
+      expect(stub.callAnother()).toBe('anotherFactory::call')
+    })
+  })
+
+  describe('resolveClass', () => {
+    class StubClass {
+      private readonly someClassInstance: SomeClass
+      private readonly anotherClassInstance: AnotherClass
+    
+      public constructor(bundle: {
+        someClassInstance: SomeClass,
+        anotherClassInstance: AnotherClass
+      }) {
+        this.someClassInstance = bundle.someClassInstance
+        this.anotherClassInstance = bundle.anotherClassInstance
+      }
+  
+      public callSome() {
+        return this.someClassInstance.call()
+      }
+      public callAnother() {
+        return this.anotherClassInstance.call()
+      }
+    }
+
+    it('should resolve class', () => {
+      const module = new Module()
+  
+      module.registerConstructor('someClassInstance', SomeClass)
+      module.registerConstructor('anotherClassInstance', AnotherClass)
+  
+      const stub = module.resolveConstructor(StubClass)
+  
+      expect(stub.callSome()).toBe('SomeClass::call')
+      expect(stub.callAnother()).toBe('AnotherClass::call')
     })
   })
 })
-
-
-
-
-// describe('initialize', () => {
-//   const calledInitializers = [] as string[]
-
-//   afterEach(() => {
-//     calledInitializers.length = 0
-//   })
-
-//   class SomeInitializer extends Core.Initializer { 
-//     public initialize() { 
-//       calledInitializers.push(SomeInitializer.name)
-//       return { [SomeInitializer.name]: SomeInitializer.name }
-//     }
-//   }
-
-//   class AnotherInitializer extends Core.Initializer { 
-//     public initialize() { 
-//       calledInitializers.push(AnotherInitializer.name)
-//       return { [AnotherInitializer.name]: AnotherInitializer.name }
-//     }
-//   }
-
-//   it('should call all initializer classes on the order they were registered', async () => {
-//     const container = new Module()
-
-//     container.registerConstructor('someInitializer', SomeInitializer)
-//     container.registerConstructor('anotherInitializer', AnotherInitializer)
-
-//     await container.initialize()
-
-//     expect(calledInitializers.length).toEqual(2)
-//     expect(calledInitializers).toEqual([
-//       SomeInitializer.name,
-//       AnotherInitializer.name,
-//     ])
-// }
-
-// it('should return initialized values', async () => {
-//   const container = new Module()
-
-//   container.register('someInitializer', SomeInitializer)
-//   container.register('anotherInitializer', AnotherInitializer)
-
-//   const initializedValues = await container.initialize()
-
-//   expect(initializedValues).toEqual({
-//     [SomeInitializer.name]: SomeInitializer.name,
-//     [AnotherInitializer.name]: AnotherInitializer.name,
-//   })
-// })
-
-  // describe('useModule', () => {
-  //   class SomeClass {
-  //     private readonly anotherClass: AnotherClass
-
-  //     public constructor(dependencies: {
-  //       anotherClass: AnotherClass
-  //     }) {
-  //       this.anotherClass = dependencies.anotherClass
-  //     }
-
-  //     public callSomeClass() {
-  //       return 'SomeClass::callSomeClass'
-  //     }
-
-  //     public callAnotherClass() {
-  //       return this.anotherClass.callAnotherClass()
-  //     }
-  //   }
-
-  //   class AnotherClass {
-  //     public callAnotherClass() {
-  //       return 'AnotherClass::callAnotherClass'
-  //     }
-  //   }
-
-  //   const anotherModule = new Module()
-  //   anotherModule.register('anotherClass', AnotherClass)
-
-  //   const someModule = new Module()
-  //   someModule.register('someClass', SomeClass)
-
-  //   someModule.useModule(anotherModule)
-
-  //   it('should pass', () => {
-  //     const someClass = someModule.resolveToken<SomeClass>('someClass')
-  //     expect(someClass.callSomeClass()).toEqual('SomeClass::callSomeClass')      
-  //     expect(someClass.callAnotherClass()).toEqual('AnotherClass::callAnotherClass')      
-  //   })
-  // })
