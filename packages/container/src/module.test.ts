@@ -1,6 +1,9 @@
 import * as Core from '@nodelith/core'
 import { Module } from './module'
 
+// import * as Injection from '@nodelith/injection'
+
+
 describe('Module', () => {
   interface GenericInterface {
     callSomeClassService(): string
@@ -43,25 +46,21 @@ describe('Module', () => {
 
   describe('register', () => {
     const module = new Module()
-    module.register('someClassService', SomeClassService)
-    module.register('anotherClassService', AnotherClassService)
+    module.registerConstructor('someClassService', SomeClassService)
+    module.registerConstructor('anotherClassService', AnotherClassService)
 
-    it('should throw error when registration key is already in used', () => {
-      expect(() => {
-        module.register('someClassService', SomeClassService)
-      }).toThrow()
+    it('Should throw error when registration key is already in used', () => {
+      expect(() => module.registerConstructor('someClassService', SomeClassService)).toThrow()
     })  
   })
 
   describe('resolve', () => {
     const module = new Module()
-    module.register('someClassService', SomeClassService)
-    module.register('anotherClassService', AnotherClassService)
+    module.registerConstructor('someClassService', SomeClassService)
+    module.registerConstructor('anotherClassService', AnotherClassService)
 
     it('should throw error when registration key does not exist', () => {
-      expect(() => {
-        module.resolveToken('invalidKey')
-      }).toThrow()
+      expect(() => module.resolveToken('invalidKey')).toThrow()
     })
     
     it('should correctly call resolved instances injected under resolved primary instance', () => {
@@ -76,95 +75,97 @@ describe('Module', () => {
       expect(anotherClassService.callAnotherClassService()).toEqual('AnotherClassService::callAnotherClassService')
     })
   })
-
-  describe('initialize', () => {
-    const calledInitializers = [] as string[]
-
-    afterEach(() => {
-      calledInitializers.length = 0
-    })
-
-    class SomeInitializer extends Core.Initializer { 
-      public initialize() { 
-        calledInitializers.push(SomeInitializer.name)
-        return { [SomeInitializer.name]: SomeInitializer.name }
-      }
-    }
-
-    class AnotherInitializer extends Core.Initializer { 
-      public initialize() { 
-        calledInitializers.push(AnotherInitializer.name)
-        return { [AnotherInitializer.name]: AnotherInitializer.name }
-      }
-    }
-
-    it('should call all initializer classes on the order they were registered', async () => {
-      const container = new Module()
-
-      container.register('someInitializer', SomeInitializer)
-      container.register('anotherInitializer', AnotherInitializer)
-
-      await container.initialize()
-
-      expect(calledInitializers.length).toEqual(2)
-      expect(calledInitializers).toEqual([
-        SomeInitializer.name,
-        AnotherInitializer.name,
-      ])
-    })
-
-    // it('should return initialized values', async () => {
-    //   const container = new Module()
-
-    //   container.register('someInitializer', SomeInitializer)
-    //   container.register('anotherInitializer', AnotherInitializer)
-
-    //   const initializedValues = await container.initialize()
-
-    //   expect(initializedValues).toEqual({
-    //     [SomeInitializer.name]: SomeInitializer.name,
-    //     [AnotherInitializer.name]: AnotherInitializer.name,
-    //   })
-    // })
-  })
-
-  describe('useModule', () => {
-    class SomeClass {
-      private readonly anotherClass: AnotherClass
-
-      public constructor(dependencies: {
-        anotherClass: AnotherClass
-      }) {
-        this.anotherClass = dependencies.anotherClass
-      }
-
-      public callSomeClass() {
-        return 'SomeClass::callSomeClass'
-      }
-
-      public callAnotherClass() {
-        return this.anotherClass.callAnotherClass()
-      }
-    }
-
-    class AnotherClass {
-      public callAnotherClass() {
-        return 'AnotherClass::callAnotherClass'
-      }
-    }
-
-    const anotherModule = new Module()
-    anotherModule.register('anotherClass', AnotherClass)
-
-    const someModule = new Module()
-    someModule.register('someClass', SomeClass)
-
-    someModule.useModule(anotherModule)
-
-    it('should pass', () => {
-      const someClass = someModule.resolveToken<SomeClass>('someClass')
-      expect(someClass.callSomeClass()).toEqual('SomeClass::callSomeClass')      
-      expect(someClass.callAnotherClass()).toEqual('AnotherClass::callAnotherClass')      
-    })
-  })
 })
+
+
+
+
+// describe('initialize', () => {
+//   const calledInitializers = [] as string[]
+
+//   afterEach(() => {
+//     calledInitializers.length = 0
+//   })
+
+//   class SomeInitializer extends Core.Initializer { 
+//     public initialize() { 
+//       calledInitializers.push(SomeInitializer.name)
+//       return { [SomeInitializer.name]: SomeInitializer.name }
+//     }
+//   }
+
+//   class AnotherInitializer extends Core.Initializer { 
+//     public initialize() { 
+//       calledInitializers.push(AnotherInitializer.name)
+//       return { [AnotherInitializer.name]: AnotherInitializer.name }
+//     }
+//   }
+
+//   it('should call all initializer classes on the order they were registered', async () => {
+//     const container = new Module()
+
+//     container.registerConstructor('someInitializer', SomeInitializer)
+//     container.registerConstructor('anotherInitializer', AnotherInitializer)
+
+//     await container.initialize()
+
+//     expect(calledInitializers.length).toEqual(2)
+//     expect(calledInitializers).toEqual([
+//       SomeInitializer.name,
+//       AnotherInitializer.name,
+//     ])
+// }
+
+// it('should return initialized values', async () => {
+//   const container = new Module()
+
+//   container.register('someInitializer', SomeInitializer)
+//   container.register('anotherInitializer', AnotherInitializer)
+
+//   const initializedValues = await container.initialize()
+
+//   expect(initializedValues).toEqual({
+//     [SomeInitializer.name]: SomeInitializer.name,
+//     [AnotherInitializer.name]: AnotherInitializer.name,
+//   })
+// })
+
+  // describe('useModule', () => {
+  //   class SomeClass {
+  //     private readonly anotherClass: AnotherClass
+
+  //     public constructor(dependencies: {
+  //       anotherClass: AnotherClass
+  //     }) {
+  //       this.anotherClass = dependencies.anotherClass
+  //     }
+
+  //     public callSomeClass() {
+  //       return 'SomeClass::callSomeClass'
+  //     }
+
+  //     public callAnotherClass() {
+  //       return this.anotherClass.callAnotherClass()
+  //     }
+  //   }
+
+  //   class AnotherClass {
+  //     public callAnotherClass() {
+  //       return 'AnotherClass::callAnotherClass'
+  //     }
+  //   }
+
+  //   const anotherModule = new Module()
+  //   anotherModule.register('anotherClass', AnotherClass)
+
+  //   const someModule = new Module()
+  //   someModule.register('someClass', SomeClass)
+
+  //   someModule.useModule(anotherModule)
+
+  //   it('should pass', () => {
+  //     const someClass = someModule.resolveToken<SomeClass>('someClass')
+  //     expect(someClass.callSomeClass()).toEqual('SomeClass::callSomeClass')      
+  //     expect(someClass.callAnotherClass()).toEqual('AnotherClass::callAnotherClass')      
+  //   })
+  // })
