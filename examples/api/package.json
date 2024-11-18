@@ -23,7 +23,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "start": "node dist/app.start.js",
+    "start": "node dist/application.start.js",
     "build": "rimraf ./dist/* && tsc",
     "build:watch": "rimraf ./dist/* && tsc --watch"
   },

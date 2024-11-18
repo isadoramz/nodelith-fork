@@ -4,6 +4,5 @@ import { PetService } from './pet.service'
 import { PetRepository } from './pet.repository'
 
 export const PetModule = new Module()
-
-PetModule.register('petService', PetService, { access: 'public'})
-PetModule.register('petRepository', PetRepository, { access: 'private'})
+PetModule.registerConstructor('petService', PetService)
+PetModule.registerConstructor('petRepository', PetRepository)
