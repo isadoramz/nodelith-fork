@@ -1,71 +1,53 @@
-import {
-  Collection,
-  Document,
-  ObjectId,
-  WithId,
-  Filter,
-  Db,
-} from 'mongodb'
+import * as Mongodb  from 'mongodb'
+import * as Core from '@nodelith/core'
+import * as Utilities from '@nodelith/utilities'
 
-import {
-  Entity,
-  Identifier,
-  EntityProperties,
-  EntityPropertiesToUpdate,
-  RepositoryError,
-  Repository,
-} from '@nodelith/context'
+export class MongoRepository<E extends Core.Entity<any>> implements Core.Repository<E> {
+  protected readonly collection: Mongodb.Collection
 
-import { 
-  ArrayUtilities
-} from '@nodelith/utilities'
-
-export class MongoRepository<E extends Entity<any>> implements Repository<E> {
-  protected readonly collection: Collection
-
-  constructor(db: Db, collectionName: string) {
+  constructor(db: Mongodb.Db, collectionName: string) {
     this.collection = db.collection(collectionName)
   }
 
   protected async executeRepositoryOperation<ReturnType>(asyncCallback: () => Promise<ReturnType>): Promise<ReturnType> {
     return asyncCallback().catch(error => {
-      if(error instanceof RepositoryError) {
+      if(error instanceof Core.RepositoryError) {
         throw error
       }
-      throw new RepositoryError()
+      throw new Core.RepositoryError()
     })
   }
 
-  protected convertDocumentsToEntities(documents: WithId<Document>[]): E[] {
+  protected convertDocumentsToEntities(documents: Mongodb.WithId<Mongodb.Document>[]): E[] {
     return documents.map(document => this.convertDocumentToEntity(document))
   }
 
-  protected convertDocumentToEntity(document: WithId<Document>): E {
+  protected convertDocumentToEntity(document: Mongodb.WithId<Mongodb.Document>): E {
     const { _id, ...object } = document
     return { ...object, id: _id.toString() } as E
   }
 
-  protected convertIdentifiersToDocumentFilter(ids: E['id'][]): Filter<Document> {
+  protected convertIdentifiersToDocumentFilter(ids: E['id'][]): Mongodb.Filter<Mongodb.Document> {
     return { _id: { $in: this.convertToObjectIds(ids) }}
   }
 
-  protected convertIdentifierToDocumentFilter(id: E['id']): Filter<Document> {
+  protected convertIdentifierToDocumentFilter(id: E['id']): Mongodb.Filter<Mongodb.Document> {
     return { _id: this.convertToObjectId(id) }
   }
 
-  protected convertToObjectId(identifier: Identifier): ObjectId {
-    return new ObjectId(identifier)
+  protected convertToObjectId(identifier: Core.Identifier): Mongodb.ObjectId {
+    return new Mongodb.ObjectId(identifier)
   }
 
-  protected convertToObjectIds(identifiers: Identifier[]): ObjectId[] {
+  protected convertToObjectIds(identifiers: Core.Identifier[]): Mongodb.ObjectId[] {
     return identifiers.map(this.convertToObjectId)
   }
 
-  protected filterValidIdentifiers(candidates: Identifier[]) : Identifier[] {
+  protected filterValidIdentifiers(candidates: Core.Identifier[]) : Core.Identifier[] {
     return candidates.filter(this.validIdentifier)
   }
 
-  protected resolvePropertiesToUpdate(properties: EntityPropertiesToUpdate<E>) {
+  protected resolvePropertiesToUpdate(properties: Core.EntityPropertiesToUpdate<E>) {
     const currentDate = new Date()
     return {
       $unset: { ...this.resolvePropertiesToUnset(properties) },
@@ -73,7 +55,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
     }
   }
 
-  protected resolvePropertiesToSet(properties: EntityPropertiesToUpdate<E>) {
+  protected resolvePropertiesToSet(properties: Core.EntityPropertiesToUpdate<E>) {
     return Object.entries(properties).reduce((acc, [key, value]) => {
       if(value === undefined || value === null) {
         return acc
@@ -83,7 +65,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
     }, {})
   }
 
-  protected resolvePropertiesToUnset(properties: EntityPropertiesToUpdate<E>) {
+  protected resolvePropertiesToUnset(properties: Core.EntityPropertiesToUpdate<E>) {
     return Object.entries(properties).reduce((acc, [key, value]) => {
       if(value !== undefined && value !== null) {
         return acc
@@ -93,11 +75,11 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
     }, {})
   }
 
-  protected validIdentifier(identifier: Identifier) {
-    return ObjectId.isValid(identifier)
+  protected validIdentifier(identifier: Core.Identifier) {
+    return Mongodb.ObjectId.isValid(identifier)
   }
 
-  public async createOne(properties: EntityProperties<E>): Promise<E> {
+  public async createOne(properties: Core.EntityProperties<E>): Promise<E> {
     return this.executeRepositoryOperation(async () => {
       const currentDate = new Date()
   
@@ -115,7 +97,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
     })
   }
 
-  public async createMany(properties: EntityProperties<E>[]): Promise<E[]> {
+  public async createMany(properties: Core.EntityProperties<E>[]): Promise<E[]> {
     return this.executeRepositoryOperation(async () => {
 
       if(properties.length === 0) {
@@ -144,10 +126,10 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
   
       const insertedIds = Object.values(insertResponse.insertedIds)
   
-      return ArrayUtilities.merge(timestampedProperties, insertedIds, (documentWithoutId, objectId) => {
+      return Utilities.ArrayUtils.merge(timestampedProperties, insertedIds, (documentWithoutId, objectId) => {
         if(!documentWithoutId || !objectId) {
           // TODO: improve error throwing
-          throw new RepositoryError()
+          throw new Core.RepositoryError()
         }
   
         return this.convertDocumentToEntity({
@@ -157,7 +139,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
     })
   }
 
-  public async updateById(id: E['id'], properties: EntityPropertiesToUpdate<E>): Promise<E> {
+  public async updateById(id: E['id'], properties: Core.EntityPropertiesToUpdate<E>): Promise<E> {
     return this.executeRepositoryOperation(async () => {
       const mongoDocumentFilter = this.convertIdentifierToDocumentFilter(id)
 
@@ -167,7 +149,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
         returnDocument: 'after'
       } as const
 
-      const { value: document } = await this.collection.findOneAndUpdate(
+      const document = await this.collection.findOneAndUpdate(
         mongoDocumentFilter,
         propertiesToUpdate,
         mongodbUpdateOptions,
@@ -175,14 +157,14 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
 
       if(!document) {
         // TODO: improve error throwing
-        throw new RepositoryError(`Could not update entity. Could not find a entity with id ${id}.`)
+        throw new Core.RepositoryError(`Could not update entity. Could not find a entity with id ${id}.`)
       }
 
       return this.convertDocumentToEntity(document)
     })
   }
 
-  public async updateByIds(ids: E['id'][], properties: EntityPropertiesToUpdate<E>): Promise<E[]> {
+  public async updateByIds(ids: E['id'][], properties: Core.EntityPropertiesToUpdate<E>): Promise<E[]> {
     return this.executeRepositoryOperation(async () => {
       const mongoDocumentFilter = this.convertIdentifiersToDocumentFilter(ids)
 
