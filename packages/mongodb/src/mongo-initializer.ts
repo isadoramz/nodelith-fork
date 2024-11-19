@@ -1,5 +1,5 @@
 import * as Mongodb from 'mongodb'
-import { Initializer } from '@nodelith/context'
+import { Initializer } from '@nodelith/core'
 import { MongodbConfig } from './mongo-config'
 
 export class MongodbInitializer implements Initializer {

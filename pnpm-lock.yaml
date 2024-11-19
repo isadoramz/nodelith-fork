@@ -235,10 +235,6 @@ importers:
         version: 5.6.3
 
   packages/mongodb:
-    dependencies:
-      mongodb-memory-server:
-        specifier: ^10.1.2
-        version: 10.1.2
     devDependencies:
       '@nodelith/core':
         specifier: workspace:*
@@ -261,6 +257,9 @@ importers:
       mongodb:
         specifier: ^6.10.0
         version: 6.10.0
+      mongodb-memory-server:
+        specifier: ^10.1.2
+        version: 10.1.2
       rimraf:
         specifier: ^5.0.1
         version: 5.0.10
