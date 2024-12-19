@@ -1,4 +1,4 @@
-import { Constructor } from '@nodelith/context';
+import { Constructor } from '@nodelith/utilities';
 import { ControllerClassMetadata } from './controller-class-metadata';
 
 export function ControllerPath(path: string) {

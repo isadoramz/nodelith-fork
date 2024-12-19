@@ -17,8 +17,8 @@ import {
 } from '@nodelith/context'
 
 import { 
-  ArrayUtils
-} from '@nodelith/utils'
+  ArrayUtilities
+} from '@nodelith/utilities'
 
 export class MongoRepository<E extends Entity<any>> implements Repository<E> {
   protected readonly collection: Collection
@@ -144,7 +144,7 @@ export class MongoRepository<E extends Entity<any>> implements Repository<E> {
   
       const insertedIds = Object.values(insertResponse.insertedIds)
   
-      return ArrayUtils.merge(timestampedProperties, insertedIds, (documentWithoutId, objectId) => {
+      return ArrayUtilities.merge(timestampedProperties, insertedIds, (documentWithoutId, objectId) => {
         if(!documentWithoutId || !objectId) {
           // TODO: improve error throwing
           throw new RepositoryError()

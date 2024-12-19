@@ -1,5 +1,6 @@
 import { AwilixContainer, InjectionModeType, LifetimeType, asClass, asFunction, asValue, createContainer } from 'awilix';
-import { Constructor, Logger, Function, Initializer } from '@nodelith/context';
+import { Constructor, FactoryFunction, PlainFunction } from '@nodelith/utilities'
+import { Logger, Initializer } from '@nodelith/context';
 
 export class Container {
 
@@ -22,7 +23,7 @@ export class Container {
     return this.container.build<T>(asClass(constructor))
   }
 
-  public resolveFunction<T>(factory: Function<T>): T {
+  public resolveFunction<T>(factory: FactoryFunction<T>): T {
     return this.container.build<T>(asFunction(factory))
   }
 
@@ -42,7 +43,7 @@ export class Container {
     this.container.register(registrationKey, asClass(registration, { lifetime }))
   }
 
-  public registerFunction(registrationKey: string, registration: Function, lifetime: LifetimeType = 'SINGLETON') {
+  public registerFunction(registrationKey: string, registration: PlainFunction, lifetime: LifetimeType = 'SINGLETON') {
     if(this.container.registrations[registrationKey]) {
       throw Error(`Could not complete container function registration. Registration key ${registrationKey} is already in use.`)
     }

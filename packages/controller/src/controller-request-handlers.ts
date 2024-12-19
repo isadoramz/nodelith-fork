@@ -1,6 +1,6 @@
 import * as Express from 'express';
-import { Function, Validator } from '@nodelith/context'
-import { FunctionUtils } from '@nodelith/utils';
+import { Validator } from '@nodelith/context'
+import { FunctionUtilities } from '@nodelith/utilities';
 import { HttpCode, HttpOk, UnauthorizedError } from '@nodelith/http'
 import { ControllerRequest } from './controller-request';
 
@@ -11,7 +11,7 @@ export function createControllerRequestHandler<C>(instance: C, key: keyof C, htt
     response: Express.Response
   ) => string[] {
     return (request: ControllerRequest, response: Express.Response) => {
-      const requestArguments = requestMethod? FunctionUtils.extractArguments(requestMethod) : []
+      const requestArguments = requestMethod? FunctionUtilities.extractArguments(requestMethod) : []
       return requestArguments.map((argumentIdentifier: string) => {
         return {
           req: request,

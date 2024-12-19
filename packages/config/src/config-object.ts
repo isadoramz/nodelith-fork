@@ -1,3 +1,3 @@
-import { NestedRecord } from '@nodelith/context';
+import { DeepRecord } from '@nodelith/utilities';
 
-export type ConfigObject = NestedRecord<string, string | number | boolean>
+export type ConfigObject = DeepRecord<string, string | number | boolean>

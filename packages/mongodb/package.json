@@ -27,12 +27,12 @@
   },
   "peerDependencies": {
     "@nodelith/context": "^0.2.27",
-    "@nodelith/utils": "^0.2.24",
+    "@nodelith/utilities": "^0.2.24",
     "mongodb": "^5.2.0"
   },
   "devDependencies": {
-    "@nodelith/context": "^0.7.3",
-    "@nodelith/utils": "^0.7.1",
+    "@nodelith/context": "^0.7.1",
+    "@nodelith/utilities": "^0.7.1",
     "mongodb": "^5.2.0",
     "mongodb-memory-server": "^9.1.1"
   }
